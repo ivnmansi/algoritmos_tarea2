@@ -3,7 +3,16 @@
  * @brief Punto de entrada y parseo de argumentos del programa.
  */
 
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 #include "base.h"
+#include "csv.h"
+#include "errors.h"
+#include "print_format.h"
 
 /**
  * @brief Ejecuta el programa a partir de los argumentos entregados.
@@ -14,34 +23,25 @@
  */
 int main(int argc, char **argv)
 {
-    static struct option longOptions[] = {
-        {"id", required_argument, 0, 'i'},
-        {0, 0, 0, 0}
-    };
     int opt;
 
-    srand((unsigned int)time(NULL));
+    srand(time(NULL));
 
     if(argc == 1) {
         print_help(argv[0]);
         return EXIT_SUCCESS;
     }
 
-    if(argc >= 3 && strcmp(argv[1], "-id") == 0) {
-        search_by_id(atoi(argv[2]));
-        return EXIT_SUCCESS;
-    }
-
-    while((opt = getopt_long(argc, argv, "hg:tr:bs", longOptions, NULL)) != -1) {
+    while((opt = getopt(argc, argv, "hg:tr:bsi:")) != -1) {
         switch(opt) {
+            /* ------------ ayuda -----------------*/
             case 'h':
                 print_help(argv[0]);
                 return EXIT_SUCCESS;
-            case 'g':
-            {
-                int dataAmount = atoi(optarg);
 
-                if(MIN_DATA > dataAmount || dataAmount > MAX_DATA) {
+            /* ------------ generacion de datos -----------------*/
+            case 'g':
+                if(MIN_DATA > atoi(optarg) || atoi(optarg) > MAX_DATA) {
                     char detail[128];
 
                     snprintf(detail, sizeof(detail), "Debe estar entre %d y %d", MIN_DATA, MAX_DATA);
@@ -50,41 +50,41 @@ int main(int argc, char **argv)
                 }
 
                 printf("\nGenerando" BOLD ORANGE " %d " RESET "datos...\n\n", atoi(optarg));
-                create_deportistas_csv(dataAmount);
+                create_deportistas_csv(atoi(optarg));
                 break;
-            }
+            
+            /* ------------ flujo interactivo ordenamiento -----------------*/
             case 't':
-            {
                 run_experiment();
                 break;
-            }
-            case 'i':
-            {
-                search_by_id(atoi(optarg));
-                break;
-            }
-            case 'r':
-            {
-                int rankingAmount = atoi(optarg);
 
-                if(rankingAmount <= 0) {
+            /** ----------- flujo interactivo busqueda --------------------- */
+            case 'i':
+                search(atoi(optarg));
+                break;
+
+            /** ----------- mostrar ranking --------------------- */
+            case 'r':
+
+                if(atoi(optarg) <= 0) {
                     print_error(ERROR_INVALID_RANKING_AMOUNT, NULL);
                     return EXIT_FAILURE;
                 }
 
-                show_ranking(rankingAmount);
+                show_ranking(atoi(optarg));
                 break;
-            }
+            
+            /** ----------- benchmark de busqueda --------------------- */
             case 'b':
-            {
                 run_search_benchmark();
                 break;
-            }
-            case 's':
-            {   
+            
+            /** ----------- benchmark de ordenamiento --------------------- */
+            case 's':  
                 run_sort_benchmark();
                 break;
-            }
+            
+            /** ----------- opción desconocida --------------------- */
             case '?':
             {
                 char detail[32];

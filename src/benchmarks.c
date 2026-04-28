@@ -3,89 +3,21 @@
  * @brief Implementacion de benchmarks de busqueda y ordenamiento.
  */
 
-#include "base.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-typedef enum {
-    BENCHMARK_CASE_BEST = 0,
-    BENCHMARK_CASE_AVERAGE = 1,
-    BENCHMARK_CASE_WORST = 2
-} BenchmarkCase;
+#include "base.h"
+#include "csv.h"
+#include "errors.h"
+#include "print_format.h"
+#include "searching.h"
+#include "sorting.h"
 
-/**
- * @brief Limpia la linea actual en la consola.
- */
-static void progress_clear_line(void)
-{
-    printf(CURSOR_HOME CLEAR_LINE);
-    fflush(stdout);
-}
 
-/**
- * @brief Actualiza la barra de progreso de un benchmark.
- *
- * @param benchmarkName Nombre del benchmark (ej: "search" o "sort")
- * @param intervalIndex Indice del intervalo actual
- * @param intervalCount Cantidad de intervalos
- * @param n Tamano de los datos
- * @param repeatIndex Indice de la repeticion actual
- * @param repeatCount Cantidad de repeticiones
- * @param stage Etapa del proceso
- */
-static void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage)
-{
-    printf(
-        CURSOR_HOME CLEAR_LINE DIM"%s | %d/%d | n=%d | rep %d/%d | %s" RESET,
-        benchmarkName,
-        intervalIndex,
-        intervalCount,
-        n,
-        repeatIndex,
-        repeatCount,
-        stage
-    );
-    fflush(stdout);
-}
 
-/**
- * @brief Devuelve el nombre legible de un caso experimental.
- *
- * @param benchmarkCase Caso experimental.
- * @return const char* Nombre asociado.
- */
-static const char *get_case_name(BenchmarkCase benchmarkCase)
-{
-    switch(benchmarkCase) {
-        case BENCHMARK_CASE_BEST:
-            return "mejor";
-        case BENCHMARK_CASE_AVERAGE:
-            return "promedio";
-        case BENCHMARK_CASE_WORST:
-            return "peor";
-        default:
-            return "desconocido";
-    }
-}
 
-/**
- * @brief Mezcla un arreglo de deportistas usando Fisher-Yates.
- *
- * @param deportistas Arreglo a mezclar.
- * @param count Cantidad de elementos.
- */
-static void shuffle_deportistas_array(Deportista *deportistas, int count)
-{
-    if(deportistas == NULL || count < 2) {
-        return;
-    }
-
-    for(int i = count - 1; i > 0; i--) {
-        int j = rand() % (i + 1);
-
-        swap_deportistas(&deportistas[i], &deportistas[j]);
-    }
-}
 
 /**
  * @brief Prepara un arreglo para medir un caso experimental de ordenamiento.
@@ -283,7 +215,7 @@ static Deportista *clone_deportistas_array(Deportista *srcArray, int count)
 /**
  * @brief Ejecuta el benchmark de busqueda y guarda sus resultados en CSV.
  */
-void run_search_benchmark()
+void run_search_benchmark(void)
 {
     int count = 0;
     Deportista *baseArray = load_deportistas_array(&count);
@@ -392,7 +324,7 @@ void run_search_benchmark()
 /**
  * @brief Ejecuta el benchmark de ordenamiento y guarda sus resultados en CSV.
  */
-void run_sort_benchmark()
+void run_sort_benchmark(void)
 {
     int count = 0;
     Deportista *baseArray = load_deportistas_array(&count);

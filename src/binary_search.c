@@ -4,7 +4,6 @@
  */
 
 #include "searching.h"
-#include "sorting.h"
 
 /**
  * @brief Busqueda binaria iterativa de un deportista por ID.
@@ -18,6 +17,8 @@
 int binary_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId)
 {
     int left, right;
+
+    (void)criteria;
 
     if(deportistas == NULL || length < 1) {
         return -1;

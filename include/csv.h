@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include <string.h>
+
 #include "deportista.h"
 
 /**
@@ -34,5 +35,7 @@ Deportista *load_deportistas_array(int *count);
  * @param count Cantidad de elementos almacenados.
  */
 void free_deportistas_array(Deportista *deportistas, int count);
+
+void shuffle_deportistas_array(Deportista *deportistas, int count);
 
 #endif

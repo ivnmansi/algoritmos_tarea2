@@ -5,6 +5,8 @@
 
 #include "print_format.h"
 
+#include <stdio.h>
+
 /**
  * @brief Imprime una lista de deportistas.
  * 
@@ -20,4 +22,80 @@ void print_deportistas_array(Deportista *deportistas, int rankingAmount)
     for(int i = 0; i < rankingAmount; i++) {
         print_deportista(deportistas[i]);
     }
+}
+
+/**
+ * @brief Limpia la linea actual en la consola.
+ */
+void progress_clear_line(void)
+{
+    printf(CURSOR_HOME CLEAR_LINE);
+    fflush(stdout);
+}
+
+/**
+ * @brief Actualiza la barra de progreso de un benchmark.
+ *
+ * @param benchmarkName Nombre del benchmark (ej: "search" o "sort")
+ * @param intervalIndex Indice del intervalo actual
+ * @param intervalCount Cantidad de intervalos
+ * @param n Tamano de los datos
+ * @param repeatIndex Indice de la repeticion actual
+ * @param repeatCount Cantidad de repeticiones
+ * @param stage Etapa del proceso
+ */
+void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage)
+{
+    printf(
+        CURSOR_HOME CLEAR_LINE DIM"%s | %d/%d | n=%d | rep %d/%d | %s" RESET,
+        benchmarkName,
+        intervalIndex,
+        intervalCount,
+        n,
+        repeatIndex,
+        repeatCount,
+        stage
+    );
+    fflush(stdout);
+}
+
+/**
+ * @brief Devuelve el nombre legible de un caso experimental.
+ *
+ * @param benchmarkCase Caso experimental.
+ * @return const char* Nombre asociado.
+ */
+const char *get_case_name(BenchmarkCase benchmarkCase)
+{
+    switch(benchmarkCase) {
+        case BENCHMARK_CASE_BEST:
+            return "mejor";
+        case BENCHMARK_CASE_AVERAGE:
+            return "promedio";
+        case BENCHMARK_CASE_WORST:
+            return "peor";
+        default:
+            return "desconocido";
+    }
+}
+
+/**
+ * @brief Imprime la ayuda de uso del programa.
+ *
+ * @param programName Nombre del ejecutable.
+ */
+void print_help(const char *programName)
+{
+    const char *name = (programName != NULL && programName[0] != '\0') ? programName : "programa";
+
+    printf(BOLD BLUE "Uso:" RESET " %s [opciones]\n\n", name);
+    printf(BOLD "Opciones:\n" RESET);
+    printf("  %-14s %s\n", "-h", "Muestra esta ayuda");
+    printf("  %-14s %s\n", "-g <cantidad>", "Genera datos aleatorios y los guarda en el CSV");
+    printf("  %-14s %s\n", "-t", "Ejecuta el flujo interactivo de ordenamiento");
+    printf("  %-14s %s\n", "-i <id>", "Busca un deportista por ID");
+    printf("  %-14s %s\n", "-r <cantidad>", "Muestra el top N por puntaje");
+    printf("  %-14s %s\n", "-b", "Ejecuta benchmark de busqueda");
+    printf("  %-14s %s\n", "-s", "Ejecuta benchmark de ordenamiento");
+    printf("\n");
 }

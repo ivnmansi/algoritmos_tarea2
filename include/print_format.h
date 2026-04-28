@@ -7,6 +7,7 @@
 #define PRINT_FORMAT_H
 
 #include "deportista.h"
+#include "config.h"
 
 /**
  * @name Secuencias ANSI (estilos)
@@ -121,5 +122,18 @@
  * @param rankingAmount Cantidad de elementos a imprimir.
  */
 void print_deportistas_array(Deportista *deportistas, int rankingAmount);
+
+/**
+ * @brief Imprime la ayuda de uso del programa.
+ *
+ * @param programName Nombre del ejecutable.
+ */
+void print_help(const char *programName);
+
+void progress_clear_line(void);
+
+void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage);
+
+const char *get_case_name(BenchmarkCase benchmarkCase);
 
 #endif

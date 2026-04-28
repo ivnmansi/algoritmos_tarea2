@@ -3,7 +3,15 @@
  * @brief Flujos interactivos de ordenamiento, busqueda y ranking.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "base.h"
+#include "csv.h"
+#include "errors.h"
+#include "print_format.h"
+#include "searching.h"
 #include "sorting.h"
 
 /**
@@ -182,7 +190,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
  *
  * @param targetId ID buscado.
  */
-void search(SearchCriteria criteria, int targetId)
+void search(int targetId)
 {
     Deportista *deportistas = NULL;
     SearchAlgorithm algorithmOption;
@@ -192,11 +200,12 @@ void search(SearchCriteria criteria, int targetId)
 
     algorithmOption = ask_search_algorithm();
 
+    if(load_data(&deportistas, &count) == 0) {
+        return;
+    }
+
     switch(algorithmOption) {
         case SEQUENTIAL_SEARCH:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
 
             index = sequential_search(deportistas, count, SEARCH_BY_ID, targetId);
 
@@ -210,13 +219,9 @@ void search(SearchCriteria criteria, int targetId)
             print_deportista(deportistas[index]);
             free_deportistas_array(deportistas, count);
             break;
+
         case BINARY_SEARCH:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
-
             insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
-
             index = binary_search(deportistas, count, SEARCH_BY_ID, targetId);
 
             if(index < 0) {
@@ -243,23 +248,6 @@ void search(SearchCriteria criteria, int targetId)
 void show_ranking(int rankingAmount)
 {
     run_sort_operation(SORT_BY_PUNTAJE, rankingAmount, DESCENDING);
-}
-
-/**
- * @brief Imprime la ayuda de uso del programa.
- *
- * @param programName Nombre del ejecutable.
- */
-void print_help(const char *programName)
-{
-    printf("Uso: %s [opciones]\n", programName);
-    printf("  -h                 Muestra esta ayuda\n");
-    printf("  -g [cantidad]      Genera datos aleatorios\n");
-    printf("  -t                 Ejecuta el flujo interactivo de ordenamiento\n");
-    printf("  -id [valor]        Busca un deportista por ID\n");
-    printf("  -r [cantidad]      Muestra el top N por puntaje\n");
-    printf("  -b                 Ejecuta benchmark de busqueda\n");
-    printf("  -s                 Ejecuta benchmark de ordenamiento\n");
 }
 
 /**

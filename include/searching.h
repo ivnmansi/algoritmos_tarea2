@@ -21,7 +21,7 @@ typedef enum {
 } SearchAlgorithm;
 
 /**
- * @brief Criterios de busqueda disponibles.
+ * @brief Criterios de busqueda disponibles. Se puede escoger solo si se utiliza el algoritmo de range_binary_search.
  */
 typedef enum {
     SEARCH_BY_ID = 1,             /**< Buscar por ID. */

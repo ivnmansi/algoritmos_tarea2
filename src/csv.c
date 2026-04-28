@@ -4,9 +4,14 @@
  */
 
 #include "csv.h"
-#include "base.h"
+
+#include "config.h"
+#include "errors.h"
 #include "generator.h"
 #include "print_format.h"
+
+#include <stdlib.h>
+
 
 /**
  * @brief Duplica una cadena en memoria dinamica.
@@ -33,7 +38,7 @@ static char *duplicate_string(const char *src)
  * @param deportistas Arreglo a mezclar.
  * @param count Cantidad de elementos del arreglo.
  */
-static void shuffle_deportistas_array(Deportista *deportistas, int count)
+void shuffle_deportistas_array(Deportista *deportistas, int count)
 {
     if(deportistas == NULL || count < 2) {
         return;
