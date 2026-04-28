@@ -4,6 +4,7 @@
  */
 
 #include "searching.h"
+#include "sorting.h"
 
 /**
  * @brief Busca secuencialmente un deportista por ID.
@@ -13,7 +14,7 @@
  * @param targetId ID a buscar.
  * @return int Indice del elemento encontrado o -1 si no existe.
  */
-int sequential_search(Deportista *deportistas, int length, int targetId)
+int sequential_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId)
 {
     int i;
 

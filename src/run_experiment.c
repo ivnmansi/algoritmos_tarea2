@@ -4,6 +4,7 @@
  */
 
 #include "base.h"
+#include "sorting.h"
 
 /**
  * @brief Carga el CSV actual en un arreglo.
@@ -17,7 +18,6 @@ static int load_data(Deportista **deportistas, int *count)
     if(deportistas == NULL) {
         return 0;
     }
-
     if(count == NULL) {
         return 0;
     }
@@ -51,10 +51,10 @@ static SortAlgorithm ask_sort_algorithm(void)
         system("clear");
 
         printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" NORMAL);
-        printf("  1) Insertion sort\n");
-        printf("  2) Bubble sort\n");
-        printf("  3) Selection sort\n");
-        printf("  4) Cocktail shaker sort\n\n");
+        printf("\t1) Insertion sort\n");
+        printf("\t2) Bubble sort\n");
+        printf("\t3) Selection sort\n");
+        printf("\t4) Cocktail shaker sort\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
@@ -82,8 +82,12 @@ static SearchAlgorithm ask_search_algorithm(void)
         system("clear");
 
         printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" NORMAL);
-        printf("  1) Busqueda secuencial\n");
-        printf("  2) Busqueda binaria\n\n");
+        printf("\t1) Busqueda secuencial\n");
+        printf("\t2) Busqueda binaria\n");
+        printf("\t3) Busqueda binaria recursiva (por implementar)\n");
+        printf("\t4) Busqueda binaria por rango (por implementar)\n");
+        printf("\t5) Busqueda exponencial (por implementar)\n");
+        printf("\t6) Busqueda por interpolacion (por implementar)\n\n");
         printf(BOLD "Opcion: " NORMAL);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
@@ -92,7 +96,7 @@ static SearchAlgorithm ask_search_algorithm(void)
 
         selected = atoi(option);
     }
-    while(selected < SEQUENTIAL_SEARCH || selected > BINARY_SEARCH);
+    while(selected < SEQUENTIAL_SEARCH || selected > INTERPOLATION_SEARCH);
 
     return (SearchAlgorithm)selected;
 }
@@ -174,11 +178,11 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
 }
 
 /**
- * @brief Busca un deportista por ID e imprime el resultado.
+ * @brief Busca un deportista e imprime el resultado.
  *
  * @param targetId ID buscado.
  */
-void search_by_id(int targetId)
+void search(SearchCriteria criteria, int targetId)
 {
     Deportista *deportistas = NULL;
     SearchAlgorithm algorithmOption;
@@ -194,7 +198,7 @@ void search_by_id(int targetId)
                 return;
             }
 
-            index = sequential_search(deportistas, count, targetId);
+            index = sequential_search(deportistas, count, SEARCH_BY_ID, targetId);
 
             if(index < 0) {
                 snprintf(detail, sizeof(detail), "ID %d", targetId);
@@ -213,7 +217,7 @@ void search_by_id(int targetId)
 
             insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
 
-            index = binary_search(deportistas, count, targetId);
+            index = binary_search(deportistas, count, SEARCH_BY_ID, targetId);
 
             if(index < 0) {
                 snprintf(detail, sizeof(detail), "ID %d", targetId);

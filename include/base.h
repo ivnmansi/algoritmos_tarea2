@@ -63,7 +63,7 @@ void run_sort_benchmark();
  *
  * @param targetId ID a buscar.
  */
-void search_by_id(int targetId);
+void search(SearchCriteria criteria, int targetId);
 
 /**
  * @brief Muestra el ranking con los mejores deportistas por puntaje.
