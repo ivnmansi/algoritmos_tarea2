@@ -130,6 +130,10 @@ void print_deportistas_array(Deportista *deportistas, int rankingAmount);
  */
 void print_help(const char *programName);
 
+void print_search_result_header(const char *algorithmName, const char *fieldName, int value, int matches);
+
+void print_search_result_footer(void);
+
 void progress_clear_line(void);
 
 void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage);

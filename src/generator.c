@@ -73,11 +73,14 @@ char *generate_random_team(void)
 /**
  * @brief Genera un puntaje aleatorio dentro del rango permitido.
  *
- * @return float Puntaje aleatorio.
+ * @return int Puntaje aleatorio.
  */
-float generate_random_score(void)
+int generate_random_score(void)
 {
-    return ((float)rand() / RAND_MAX) * (MAX_SCORE - MIN_SCORE) + MIN_SCORE;
+    int maxScore = (int)MAX_SCORE;
+    int minScore = (int)MIN_SCORE;
+
+    return (rand() % (maxScore - minScore + 1)) + minScore;
 }
 
 /**

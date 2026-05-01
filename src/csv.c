@@ -77,7 +77,7 @@ void create_deportistas_csv(int dataAmount)
     for(i = 0; i < dataAmount; i++) {
         char *nombre = generate_random_name();
         char *equipo = generate_random_team();
-        float puntaje = generate_random_score();
+        int puntaje = generate_random_score();
         int competencias = generate_random_competitions();
 
         if(nombre == NULL || equipo == NULL) {
@@ -94,7 +94,7 @@ void create_deportistas_csv(int dataAmount)
             return;
         }
 
-        deportistas[i] = create_deportista(i + 1, nombre, equipo, puntaje, competencias);
+        deportistas[i] = create_deportista(i + 1, nombre, equipo, (float)puntaje, competencias);
         if(deportistas[i] == NULL) {
             free(nombre);
             free(equipo);
@@ -117,18 +117,18 @@ void create_deportistas_csv(int dataAmount)
     for(i = 0; i < dataAmount; i++) {
         fprintf(
             file,
-            "%d,%s,%s,%.2f,%d\n",
+            "%d,%s,%s,%d,%d\n",
             deportistas[i]->id,
             deportistas[i]->nombre,
             deportistas[i]->equipo,
-            deportistas[i]->puntaje,
+            (int)deportistas[i]->puntaje,
             deportistas[i]->competencias
         );
     }
 
     free_deportistas_array(deportistas, dataAmount);
     fclose(file);
-    printf(BG_GREEN "Archivo CSV creado con exito.\n" RESET);
+    printf(BG_GREEN "Archivo CSV creado con exito en: %s.\n" RESET, CSV_ROUTE);
 }
 
 /**

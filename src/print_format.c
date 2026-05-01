@@ -6,6 +6,7 @@
 #include "print_format.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
  * @brief Imprime una lista de deportistas.
@@ -98,4 +99,25 @@ void print_help(const char *programName)
     printf("  %-14s %s\n", "-b", "Ejecuta benchmark de busqueda");
     printf("  %-14s %s\n", "-s", "Ejecuta benchmark de ordenamiento");
     printf("\n");
+}
+
+void print_search_result_header(const char *algorithmName, const char *fieldName, int value, int matches)
+{
+    const char *safeAlgorithm = (algorithmName != NULL && algorithmName[0] != '\0') ? algorithmName : "(desconocido)";
+    const char *safeField = (fieldName != NULL && fieldName[0] != '\0') ? fieldName : "(desconocido)";
+
+    system("clear");
+
+    printf(BOLD TEAL "=== Resultado de busqueda ===\n" RESET);
+    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+    printf(BOLD "Algoritmo: " RESET "%s\n", safeAlgorithm);
+    printf(BOLD "Criterio:  " RESET "%s\n", safeField);
+    printf(BOLD "Valor:     " RESET "%d\n", value);
+    printf(BOLD "Hallados:  " RESET "%d\n", matches);
+    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+}
+
+void print_search_result_footer(void)
+{
+    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
 }

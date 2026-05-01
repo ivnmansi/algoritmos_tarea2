@@ -59,12 +59,14 @@ void print_deportista(Deportista deportista)
         return;
     }
 
-    printf("ID: %d | Nombre: %s | Equipo: %s | Puntaje: %.2f | Competencias: %d\n",
+    printf(
+        "ID: %d | Nombre: %s | Equipo: %s | Puntaje: %d | Competencias: %d\n",
         deportista->id,
         deportista->nombre,
         deportista->equipo,
         deportista->puntaje,
-        deportista->competencias);
+        deportista->competencias
+    );
 }
 
 /**

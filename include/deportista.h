@@ -16,7 +16,7 @@ typedef struct DeportistaData {
     int id;             /**< Identificador unico del deportista. */
     char *nombre;       /**< Nombre (cadena dinamica, propiedad del deportista). */
     char *equipo;       /**< Equipo (cadena dinamica, propiedad del deportista). */
-    float puntaje;      /**< Puntaje acumulado del deportista. */
+    int puntaje;      /**< Puntaje acumulado del deportista. */
     int competencias;   /**< Cantidad de competencias disputadas. */
 } DeportistaData;
 

@@ -89,14 +89,17 @@ static SearchAlgorithm ask_search_algorithm(void)
     do {
         system("clear");
 
-        printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" NORMAL);
-        printf("\t1) Busqueda secuencial\n");
-        printf("\t2) Busqueda binaria\n");
-        printf("\t3) Busqueda binaria recursiva (por implementar)\n");
-        printf("\t4) Busqueda binaria por rango (por implementar)\n");
-        printf("\t5) Busqueda exponencial (por implementar)\n");
-        printf("\t6) Busqueda por interpolacion (por implementar)\n\n");
-        printf(BOLD "Opcion: " NORMAL);
+        printf(BOLD BLUE "=== Algoritmo de busqueda ===\n" RESET);
+        printf(DIM GRAY "(Algunas busquedas requieren arreglo ordenado)\n\n" RESET);
+
+        printf("  1) Busqueda secuencial            " DIM GRAY "[ID]" RESET "\n");
+        printf("  2) Busqueda binaria               " DIM GRAY "[ID]" RESET "\n");
+        printf(DIM GRAY "  3) Busqueda binaria recursiva     [pendiente]\n" RESET);
+        printf("  4) Busqueda binaria por rango     " DIM GRAY "[PUNTAJE]" RESET "\n");
+        printf("  5) Busqueda exponencial           " DIM GRAY "[ID]" RESET "\n");
+        printf(DIM GRAY "  6) Busqueda por interpolacion     [pendiente]\n\n" RESET);
+
+        printf(BOLD "Opcion: " RESET);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
             return 0;
@@ -106,7 +109,7 @@ static SearchAlgorithm ask_search_algorithm(void)
     }
     while(selected < SEQUENTIAL_SEARCH || selected > INTERPOLATION_SEARCH);
 
-    return (SearchAlgorithm)selected;
+    return selected;
 }
 
 /**
@@ -216,7 +219,9 @@ void search(int targetId)
                 return;
             }
 
+            print_search_result_header("Secuencial", "ID", targetId, 1);
             print_deportista(deportistas[index]);
+            print_search_result_footer();
             free_deportistas_array(deportistas, count);
             break;
 
@@ -231,7 +236,55 @@ void search(int targetId)
                 return;
             }
 
+            print_search_result_header("Binaria", "ID", targetId, 1);
             print_deportista(deportistas[index]);
+            print_search_result_footer();
+            free_deportistas_array(deportistas, count);
+            break;
+        case RECURSIVE_BINARY_SEARCH:
+            print_error(ERROR_NOT_IMPLEMENTED, NULL);
+            free_deportistas_array(deportistas, count);
+            break;
+        case RANGE_BINARY_SEARCH:
+            insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
+            Range range = range_binary_search(deportistas, count, SEARCH_BY_PUNTAJE, targetId);
+
+            if(range.start < 0 || range.end < 0) {
+                snprintf(detail, sizeof(detail), "Puntaje %d", targetId);
+                free_deportistas_array(deportistas, count);
+                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+                return;
+            }
+
+            print_search_result_header(
+                "Binaria por rango",
+                "PUNTAJE",
+                targetId,
+                (range.end - range.start + 1)
+            );
+            for(int i = range.start; i <= range.end; i++) {
+                print_deportista(deportistas[i]);
+            }
+            print_search_result_footer();
+            free_deportistas_array(deportistas, count);
+            break;
+
+        case EXPONENCIAL_SEARCH:
+            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+            index = exponencial_search(deportistas, count, SEARCH_BY_ID, targetId);
+            if(index < 0) {
+                snprintf(detail, sizeof(detail), "ID %d", targetId);
+                free_deportistas_array(deportistas, count);
+                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+                return;
+            }
+            print_search_result_header("Exponencial", "ID", targetId, 1);
+            print_deportista(deportistas[index]);
+            print_search_result_footer();
+            free_deportistas_array(deportistas, count);
+            break;
+        case INTERPOLATION_SEARCH:
+            print_error(ERROR_NOT_IMPLEMENTED, NULL);
             free_deportistas_array(deportistas, count);
             break;
         default:

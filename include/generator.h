@@ -27,7 +27,7 @@ char *generate_random_team(void);
  *
  * @return float Puntaje generado en el rango [MIN_SCORE, MAX_SCORE].
  */
-float generate_random_score(void);
+int generate_random_score(void);
 
 /**
  * @brief Genera una cantidad aleatoria de competencias.
