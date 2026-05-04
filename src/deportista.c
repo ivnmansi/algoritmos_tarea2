@@ -59,11 +59,14 @@ void print_deportista(Deportista deportista)
         return;
     }
 
+    const char *nombre = (deportista->nombre != NULL) ? deportista->nombre : "(sin nombre)";
+    const char *equipo = (deportista->equipo != NULL) ? deportista->equipo : "(sin equipo)";
+
     printf(
-        "ID: %d | Nombre: %s | Equipo: %s | Puntaje: %d | Competencias: %d\n",
+        "ID: %5d | Nombre: %-24.24s | Equipo: %-18.18s | Puntaje: %4d | Comp: %3d\n",
         deportista->id,
-        deportista->nombre,
-        deportista->equipo,
+        nombre,
+        equipo,
         deportista->puntaje,
         deportista->competencias
     );

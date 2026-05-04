@@ -125,6 +125,10 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
     SortAlgorithm algorithmOption = ask_sort_algorithm();
     int count = 0;
 
+    if(rankingAmount < 0) {
+        rankingAmount = 0;
+    }
+
     switch(algorithmOption) {
         case INSERTION_SORT:
             if(load_data(&deportistas, &count) == 0) {
@@ -137,7 +141,15 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
+            print_sort_result_header(
+                get_sort_algorithm_name(algorithmOption),
+                get_sort_criteria_name(criteria),
+                get_sort_order_name(order),
+                rankingAmount,
+                count
+            );
             print_deportistas_array(deportistas, rankingAmount);
+            print_sort_result_footer();
             free_deportistas_array(deportistas, count);
             break;
         case BUBBLE_SORT:
@@ -151,7 +163,15 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
+            print_sort_result_header(
+                get_sort_algorithm_name(algorithmOption),
+                get_sort_criteria_name(criteria),
+                get_sort_order_name(order),
+                rankingAmount,
+                count
+            );
             print_deportistas_array(deportistas, rankingAmount);
+            print_sort_result_footer();
             free_deportistas_array(deportistas, count);
             break;
         case SELECTION_SORT:
@@ -165,7 +185,15 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
+            print_sort_result_header(
+                get_sort_algorithm_name(algorithmOption),
+                get_sort_criteria_name(criteria),
+                get_sort_order_name(order),
+                rankingAmount,
+                count
+            );
             print_deportistas_array(deportistas, rankingAmount);
+            print_sort_result_footer();
             free_deportistas_array(deportistas, count);
             break;
         case COCKTAIL_SHAKER_SORT:
@@ -179,7 +207,15 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
+            print_sort_result_header(
+                get_sort_algorithm_name(algorithmOption),
+                get_sort_criteria_name(criteria),
+                get_sort_order_name(order),
+                rankingAmount,
+                count
+            );
             print_deportistas_array(deportistas, rankingAmount);
+            print_sort_result_footer();
             free_deportistas_array(deportistas, count);
             break;
         default:

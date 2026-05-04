@@ -15,10 +15,6 @@
 #include "searching.h"
 #include "sorting.h"
 
-
-
-
-
 /**
  * @brief Prepara un arreglo para medir un caso experimental de ordenamiento.
  *
@@ -31,7 +27,6 @@ static void prepare_sort_case(Deportista *deportistas, int count, BenchmarkCase 
     if(deportistas == NULL || count < 2) {
         return;
     }
-
     switch(benchmarkCase) {
         case BENCHMARK_CASE_BEST:
             insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);

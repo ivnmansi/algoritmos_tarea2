@@ -134,6 +134,10 @@ void print_search_result_header(const char *algorithmName, const char *fieldName
 
 void print_search_result_footer(void);
 
+void print_sort_result_header(const char *algorithmName, const char *fieldName, const char *orderName, int shown, int total);
+
+void print_sort_result_footer(void);
+
 void progress_clear_line(void);
 
 void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage);

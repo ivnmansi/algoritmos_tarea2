@@ -43,6 +43,30 @@ typedef enum {
 
 /**
  * @brief Compara dos deportistas segun un criterio.
+ * 
+ * @param criteria 
+ * @return const char* 
+ */
+const char *get_sort_criteria_name(SortCriteria criteria);
+
+/**
+ * @brief Obtiene el nombre de un algoritmo de ordenamiento.
+ * 
+ * @param algorithm 
+ * @return const char* 
+ */
+const char *get_sort_algorithm_name(SortAlgorithm algorithm);
+
+/**
+ * @brief Obtiene el nombre de un sentido de ordenamiento.
+ * 
+ * @param order 
+ * @return const char* 
+ */
+const char *get_sort_order_name(SortOrder order);
+
+/**
+ * @brief Compara dos deportistas segun un criterio.
  *
  * @param left Deportista izquierdo.
  * @param right Deportista derecho.

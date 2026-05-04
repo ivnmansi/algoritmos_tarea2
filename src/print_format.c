@@ -8,6 +8,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void print_result_header_base(const char *title)
+{
+    const char *safeTitle = (title != NULL && title[0] != '\0') ? title : "=== Resultado ===";
+
+    system("clear");
+
+    printf(BOLD TEAL "%s\n" RESET, safeTitle);
+    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+}
+
+static void print_result_footer_base(void)
+{
+    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+}
+
 /**
  * @brief Imprime una lista de deportistas.
  * 
@@ -106,10 +121,7 @@ void print_search_result_header(const char *algorithmName, const char *fieldName
     const char *safeAlgorithm = (algorithmName != NULL && algorithmName[0] != '\0') ? algorithmName : "(desconocido)";
     const char *safeField = (fieldName != NULL && fieldName[0] != '\0') ? fieldName : "(desconocido)";
 
-    system("clear");
-
-    printf(BOLD TEAL "=== Resultado de busqueda ===\n" RESET);
-    printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+    print_result_header_base("=== Resultado de busqueda ===");
     printf(BOLD "Algoritmo: " RESET "%s\n", safeAlgorithm);
     printf(BOLD "Criterio:  " RESET "%s\n", safeField);
     printf(BOLD "Valor:     " RESET "%d\n", value);
@@ -119,5 +131,24 @@ void print_search_result_header(const char *algorithmName, const char *fieldName
 
 void print_search_result_footer(void)
 {
+    print_result_footer_base();
+}
+
+void print_sort_result_header(const char *algorithmName, const char *fieldName, const char *orderName, int shown, int total)
+{
+    const char *safeAlgorithm = (algorithmName != NULL && algorithmName[0] != '\0') ? algorithmName : "(desconocido)";
+    const char *safeField = (fieldName != NULL && fieldName[0] != '\0') ? fieldName : "(desconocido)";
+    const char *safeOrder = (orderName != NULL && orderName[0] != '\0') ? orderName : "(desconocido)";
+
+    print_result_header_base("=== Resultado de ordenamiento ===");
+    printf(BOLD "Algoritmo: " RESET "%s\n", safeAlgorithm);
+    printf(BOLD "Criterio:  " RESET "%s\n", safeField);
+    printf(BOLD "Orden:     " RESET "%s\n", safeOrder);
+    printf(BOLD "Mostrando: " RESET "%d/%d\n", shown, total);
     printf(DIM GRAY "%s\n" RESET, ASCII_HR);
+}
+
+void print_sort_result_footer(void)
+{
+    print_result_footer_base();
 }

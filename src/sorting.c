@@ -63,3 +63,66 @@ int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria
             return 0;
     }
 }
+
+/**
+ * @brief Obtiene el nombre de un criterio de ordenamiento.
+ * 
+ * @param criteria 
+ * @return const char* 
+ */
+const char *get_sort_criteria_name(SortCriteria criteria)
+{
+    switch(criteria) {
+        case SORT_BY_ID:
+            return "ID";
+        case SORT_BY_PUNTAJE:
+            return "Puntaje";
+        case SORT_BY_COMPETENCIAS:
+            return "Competencias";
+        case SORT_BY_NOMBRE:
+            return "Nombre";
+        case SORT_BY_EQUIPO:
+            return "Equipo";
+        default:
+            return "(desconocido)";
+    }
+}
+
+/**
+ * @brief Obtiene el nombre de un algoritmo de ordenamiento.
+ * 
+ * @param algorithm 
+ * @return const char* 
+ */
+const char *get_sort_algorithm_name(SortAlgorithm algorithm)
+{
+    switch(algorithm) {
+        case INSERTION_SORT:
+            return "Insertion";
+        case BUBBLE_SORT:
+            return "Bubble";
+        case SELECTION_SORT:
+            return "Selection";
+        case COCKTAIL_SHAKER_SORT:
+            return "Cocktail shaker";
+        case MERGE_SORT:
+            return "MergeSort";
+        case OPTIMIZED_MERGE_SORT:
+            return "MergeSort optimizado";
+        case QUICK_SORT:
+            return "QuickSort";
+        default:
+            return "(desconocido)";
+    }
+}
+
+/**
+ * @brief Obtiene el nombre de un sentido de ordenamiento.
+ * 
+ * @param order 
+ * @return const char* 
+ */
+const char *get_sort_order_name(SortOrder order)
+{
+    return (order == ASCENDING) ? "Ascendente" : "Descendente";
+}
