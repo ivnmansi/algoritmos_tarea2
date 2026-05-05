@@ -83,7 +83,7 @@ static int prepare_search_worst_case(Deportista *deportistas, int count, SearchA
     }
 
     if(algorithm == BINARY_SEARCH) {
-        insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+        quick_sort_median(deportistas, 0, count - 1, SORT_BY_ID, ASCENDING);
     }
 
     return get_missing_target_id(deportistas, count);
@@ -210,7 +210,7 @@ static Deportista *clone_deportistas_array(Deportista *srcArray, int count)
 /**
  * @brief Ejecuta el benchmark de busqueda y guarda sus resultados en CSV.
  */
-void run_search_benchmark(void)
+void run_search_benchmark()
 {
     int count = 0;
     Deportista *baseArray = load_deportistas_array(&count);

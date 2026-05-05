@@ -109,8 +109,14 @@ const char *get_sort_algorithm_name(SortAlgorithm algorithm)
             return "MergeSort";
         case OPTIMIZED_MERGE_SORT:
             return "MergeSort optimizado";
-        case QUICK_SORT:
-            return "QuickSort";
+        case QUICK_SORT_FIRST:
+            return "QuickSort (pivote primero)";
+        case QUICK_SORT_LAST:
+            return "QuickSort (pivote ultimo)";
+        case QUICK_SORT_RANDOM:
+            return "QuickSort (pivote aleatorio)";
+        case QUICK_SORT_MEDIAN:
+            return "QuickSort (pivote mediana)";
         default:
             return "(desconocido)";
     }

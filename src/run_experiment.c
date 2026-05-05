@@ -3,9 +3,14 @@
  * @brief Flujos interactivos de ordenamiento, busqueda y ranking.
  */
 
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "base.h"
 #include "csv.h"
@@ -50,6 +55,12 @@ static int load_data(Deportista **deportistas, int *count)
  *
  * @return SortAlgorithm Opcion seleccionada.
  */
+static int is_valid_sort_algorithm_option(int value)
+{
+    return (value >= INSERTION_SORT && value <= COCKTAIL_SHAKER_SORT)
+        || (value >= QUICK_SORT_FIRST && value <= QUICK_SORT_MEDIAN);
+}
+
 static SortAlgorithm ask_sort_algorithm(void)
 {
     char option[16];
@@ -58,12 +69,21 @@ static SortAlgorithm ask_sort_algorithm(void)
     do {
         system("clear");
 
-        printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" NORMAL);
-        printf("\t1) Insertion sort\n");
-        printf("\t2) Bubble sort\n");
-        printf("\t3) Selection sort\n");
-        printf("\t4) Cocktail shaker sort\n\n");
-        printf(BOLD "Opcion: " NORMAL);
+        printf(BOLD BLUE "=== Algoritmo de ordenamiento ===\n" RESET);
+        printf(DIM GRAY "(Los algoritmos en gris estan pendientes)\n\n" RESET);
+
+        printf("  1) Insertion sort\n");
+        printf("  2) Bubble sort                 " DIM GRAY "[optimizado]" RESET "\n");
+        printf("  3) Selection sort              " DIM GRAY "[optimizado]" RESET "\n");
+        printf("  4) Cocktail shaker sort\n");
+        printf(DIM GRAY "  5) Merge sort                  [pendiente]\n" RESET);
+        printf(DIM GRAY "  6) Merge sort optimizado       [pendiente]\n" RESET);
+        printf("  7) Quick sort                  " DIM GRAY "[pivote primero]" RESET "\n");
+        printf("  8) Quick sort                  " DIM GRAY "[pivote ultimo]" RESET "\n");
+        printf("  9) Quick sort                  " DIM GRAY "[pivote aleatorio]" RESET "\n");
+        printf(" 10) Quick sort                  " DIM GRAY "[pivote mediana]" RESET "\n\n");
+
+        printf(BOLD "Opcion: " RESET);
 
         if(fgets(option, sizeof(option), stdin) == NULL) {
             return 0;
@@ -71,7 +91,7 @@ static SortAlgorithm ask_sort_algorithm(void)
 
         selected = atoi(option);
     }
-    while(selected < INSERTION_SORT || selected > COCKTAIL_SHAKER_SORT);
+    while(!is_valid_sort_algorithm_option(selected));
 
     return (SortAlgorithm)selected;
 }
@@ -129,99 +149,54 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
         rankingAmount = 0;
     }
 
+    if(load_data(&deportistas, &count) == 0) {
+        return;
+    }
+
     switch(algorithmOption) {
         case INSERTION_SORT:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
-
             insertion_sort_deportistas(deportistas, count, criteria, order);
-
-            if(rankingAmount > count) {
-                rankingAmount = count;
-            }
-
-            print_sort_result_header(
-                get_sort_algorithm_name(algorithmOption),
-                get_sort_criteria_name(criteria),
-                get_sort_order_name(order),
-                rankingAmount,
-                count
-            );
-            print_deportistas_array(deportistas, rankingAmount);
-            print_sort_result_footer();
-            free_deportistas_array(deportistas, count);
             break;
         case BUBBLE_SORT:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
-
             optimized_bubble_sort(deportistas, count, criteria, order);
-
-            if(rankingAmount > count) {
-                rankingAmount = count;
-            }
-
-            print_sort_result_header(
-                get_sort_algorithm_name(algorithmOption),
-                get_sort_criteria_name(criteria),
-                get_sort_order_name(order),
-                rankingAmount,
-                count
-            );
-            print_deportistas_array(deportistas, rankingAmount);
-            print_sort_result_footer();
-            free_deportistas_array(deportistas, count);
             break;
         case SELECTION_SORT:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
-
             optimized_selection_sort(deportistas, count, criteria, order);
-
-            if(rankingAmount > count) {
-                rankingAmount = count;
-            }
-
-            print_sort_result_header(
-                get_sort_algorithm_name(algorithmOption),
-                get_sort_criteria_name(criteria),
-                get_sort_order_name(order),
-                rankingAmount,
-                count
-            );
-            print_deportistas_array(deportistas, rankingAmount);
-            print_sort_result_footer();
-            free_deportistas_array(deportistas, count);
             break;
         case COCKTAIL_SHAKER_SORT:
-            if(load_data(&deportistas, &count) == 0) {
-                return;
-            }
-
             cocktail_shaker_sort(deportistas, count, criteria, order);
-
-            if(rankingAmount > count) {
-                rankingAmount = count;
-            }
-
-            print_sort_result_header(
-                get_sort_algorithm_name(algorithmOption),
-                get_sort_criteria_name(criteria),
-                get_sort_order_name(order),
-                rankingAmount,
-                count
-            );
-            print_deportistas_array(deportistas, rankingAmount);
-            print_sort_result_footer();
-            free_deportistas_array(deportistas, count);
+            break;
+        case QUICK_SORT_FIRST:
+            quick_sort_first(deportistas, 0, count - 1, criteria, order);
+            break;
+        case QUICK_SORT_LAST:
+            quick_sort_last(deportistas, 0, count - 1, criteria, order);
+            break;
+        case QUICK_SORT_RANDOM:
+            quick_sort_random(deportistas, 0, count - 1, criteria, order);
+            break;
+        case QUICK_SORT_MEDIAN:
+            quick_sort_median(deportistas, 0, count - 1, criteria, order);
             break;
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);
             break;
     }
+
+    if(rankingAmount > count) {
+        rankingAmount = count;
+    }
+
+    print_sort_result_header(
+        get_sort_algorithm_name(algorithmOption),
+        get_sort_criteria_name(criteria),
+        get_sort_order_name(order),
+        rankingAmount,
+        count
+    );
+    print_deportistas_array(deportistas, rankingAmount);
+    print_sort_result_footer();
+    free_deportistas_array(deportistas, count);
 }
 
 /**
@@ -232,101 +207,113 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
 void search(int targetId)
 {
     Deportista *deportistas = NULL;
-    SearchAlgorithm algorithmOption;
+    SearchAlgorithm algorithmOption = ask_search_algorithm();
     int count = 0;
-    int index;
+    int index = -1;
+    Range range = {-1,-1 };
+    int isRangeResult = 0;
+    int matches = 1;
+
+    const char *algorithmLabel = NULL;
+    const char *fieldLabel = NULL;
     char detail[32];
 
-    algorithmOption = ask_search_algorithm();
+    struct timespec startTime;
+    struct timespec endTime;
+    double elapsedSeconds = 0;
+    int hasElapsed = 0;
 
     if(load_data(&deportistas, &count) == 0) {
         return;
     }
 
-    switch(algorithmOption) {
-        case SEQUENTIAL_SEARCH:
-
-            index = sequential_search(deportistas, count, SEARCH_BY_ID, targetId);
-
-            if(index < 0) {
-                snprintf(detail, sizeof(detail), "ID %d", targetId);
-                free_deportistas_array(deportistas, count);
-                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
-                return;
-            }
-
-            print_search_result_header("Secuencial", "ID", targetId, 1);
-            print_deportista(deportistas[index]);
-            print_search_result_footer();
-            free_deportistas_array(deportistas, count);
-            break;
-
-        case BINARY_SEARCH:
-            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
-            index = binary_search(deportistas, count, SEARCH_BY_ID, targetId);
-
-            if(index < 0) {
-                snprintf(detail, sizeof(detail), "ID %d", targetId);
-                free_deportistas_array(deportistas, count);
-                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
-                return;
-            }
-
-            print_search_result_header("Binaria", "ID", targetId, 1);
-            print_deportista(deportistas[index]);
-            print_search_result_footer();
-            free_deportistas_array(deportistas, count);
-            break;
-        case RECURSIVE_BINARY_SEARCH:
-            print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            free_deportistas_array(deportistas, count);
-            break;
-        case RANGE_BINARY_SEARCH:
-            insertion_sort_deportistas(deportistas, count, SORT_BY_PUNTAJE, ASCENDING);
-            Range range = range_binary_search(deportistas, count, SEARCH_BY_PUNTAJE, targetId);
-
-            if(range.start < 0 || range.end < 0) {
-                snprintf(detail, sizeof(detail), "Puntaje %d", targetId);
-                free_deportistas_array(deportistas, count);
-                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
-                return;
-            }
-
-            print_search_result_header(
-                "Binaria por rango",
-                "PUNTAJE",
-                targetId,
-                (range.end - range.start + 1)
-            );
-            for(int i = range.start; i <= range.end; i++) {
-                print_deportista(deportistas[i]);
-            }
-            print_search_result_footer();
-            free_deportistas_array(deportistas, count);
-            break;
-
-        case EXPONENCIAL_SEARCH:
-            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
-            index = exponencial_search(deportistas, count, SEARCH_BY_ID, targetId);
-            if(index < 0) {
-                snprintf(detail, sizeof(detail), "ID %d", targetId);
-                free_deportistas_array(deportistas, count);
-                print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
-                return;
-            }
-            print_search_result_header("Exponencial", "ID", targetId, 1);
-            print_deportista(deportistas[index]);
-            print_search_result_footer();
-            free_deportistas_array(deportistas, count);
-            break;
-        case INTERPOLATION_SEARCH:
-            print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            free_deportistas_array(deportistas, count);
-            break;
-        default:
-            print_error(ERROR_NOT_IMPLEMENTED, NULL);
-            break;
+    if(algorithmOption == SEQUENTIAL_SEARCH) {
+        algorithmLabel = "Secuencial";
+        fieldLabel = "ID";
+        clock_gettime(CLOCK_MONOTONIC, &startTime);
+        index = sequential_search(deportistas, count, SEARCH_BY_ID, targetId);
+        clock_gettime(CLOCK_MONOTONIC, &endTime);
+        hasElapsed = 1;
     }
+    else if(algorithmOption == BINARY_SEARCH) {
+        algorithmLabel = "Binaria";
+        fieldLabel = "ID";
+        quick_sort_median(deportistas, 0, count - 1, SORT_BY_ID, ASCENDING);
+        clock_gettime(CLOCK_MONOTONIC, &startTime);
+        index = binary_search(deportistas, count, SEARCH_BY_ID, targetId);
+        clock_gettime(CLOCK_MONOTONIC, &endTime);
+        hasElapsed = 1;
+    }
+    else if(algorithmOption == EXPONENCIAL_SEARCH) {
+        algorithmLabel = "Exponencial";
+        fieldLabel = "ID";
+        quick_sort_median(deportistas, 0, count - 1, SORT_BY_ID, ASCENDING);
+        clock_gettime(CLOCK_MONOTONIC, &startTime);
+        index = exponencial_search(deportistas, count, SEARCH_BY_ID, targetId);
+        clock_gettime(CLOCK_MONOTONIC, &endTime);
+        hasElapsed = 1;
+    }
+    else if(algorithmOption == RANGE_BINARY_SEARCH) {
+        algorithmLabel = "Binaria por rango";
+        fieldLabel = "PUNTAJE";
+        isRangeResult = 1;
+        quick_sort_median(deportistas, 0, count - 1, SORT_BY_PUNTAJE, ASCENDING);
+        clock_gettime(CLOCK_MONOTONIC, &startTime);
+        range = range_binary_search(deportistas, count, SEARCH_BY_PUNTAJE, targetId);
+        clock_gettime(CLOCK_MONOTONIC, &endTime);
+        hasElapsed = 1;
+        if(range.start >= 0 && range.end >= range.start) {
+            matches = (range.end - range.start + 1);
+        }
+    }
+    else if(algorithmOption == RECURSIVE_BINARY_SEARCH || algorithmOption == INTERPOLATION_SEARCH) {
+        print_error(ERROR_NOT_IMPLEMENTED, NULL);
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+    else {
+        print_error(ERROR_NOT_IMPLEMENTED, NULL);
+        free_deportistas_array(deportistas, count);
+        return;
+    }
+
+    if(!isRangeResult) {
+        if(index < 0) {
+            snprintf(detail, sizeof(detail), "ID %d", targetId);
+            print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+
+        print_search_result_header(algorithmLabel, fieldLabel, targetId, 1);
+        print_deportista(deportistas[index]);
+        print_search_result_footer();
+    }
+    else {
+        if(range.start < 0 || range.end < 0) {
+            snprintf(detail, sizeof(detail), "Puntaje %d", targetId);
+            print_error(ERROR_DEPORTISTA_NOT_FOUND, detail);
+            free_deportistas_array(deportistas, count);
+            return;
+        }
+
+        print_search_result_header(algorithmLabel, fieldLabel, targetId, matches);
+        for(int i = range.start; i <= range.end; i++) {
+            print_deportista(deportistas[i]);
+        }
+        print_search_result_footer();
+    }
+
+    if(hasElapsed) {
+        elapsedSeconds = (double)(endTime.tv_sec - startTime.tv_sec)
+            + (double)(endTime.tv_nsec - startTime.tv_nsec) / 1e9;
+        if(elapsedSeconds < 0) {
+            elapsedSeconds = 0;
+        }
+        printf(DIM GRAY "Tiempo total: %f s\n" RESET, elapsedSeconds);
+    }
+
+    free_deportistas_array(deportistas, count);
 }
 
 /**
@@ -408,5 +395,19 @@ void run_experiment(void)
     SortCriteria criteria = ask_sort_criteria();
     SortOrder order = ask_sort_order();
 
+    struct timespec startTime;
+    struct timespec endTime;
+    clock_gettime(CLOCK_MONOTONIC, &startTime);
+
     run_sort_operation(criteria, MAX_DATA, order);
+
+    clock_gettime(CLOCK_MONOTONIC, &endTime);
+
+    double elapsedSeconds = (double)(endTime.tv_sec - startTime.tv_sec)
+        + (double)(endTime.tv_nsec - startTime.tv_nsec) / 1e9;
+    if(elapsedSeconds < 0) {
+        elapsedSeconds = 0;
+    }
+
+    printf(DIM GRAY "Tiempo total: %.3f s\n" RESET, elapsedSeconds);
 }
