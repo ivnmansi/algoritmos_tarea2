@@ -178,6 +178,12 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
         case QUICK_SORT_MEDIAN:
             quick_sort_median(deportistas, 0, count - 1, criteria, order);
             break;
+         case MERGE_SORT:
+            merge_sort_deportistas(deportistas, count, criteria, order);
+            break;
+        case OPTIMIZED_MERGE_SORT:
+            merge_sort_optimized_deportistas(deportistas, count, criteria, order);
+            break;   
         default:
             print_error(ERROR_NOT_IMPLEMENTED, NULL);
             break;

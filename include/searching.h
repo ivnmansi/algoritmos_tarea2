@@ -98,9 +98,9 @@ int exponencial_search(Deportista *deportistas, int length, SearchCriteria crite
  * @param deportistas Arreglo de deportistas ordenado por ID ascendente.
  * @param length Cantidad de elementos del arreglo.
  * @param criteria Criterio de busqueda (ID, puntaje o competencias).
- * @param targetId ID que se desea encontrar.
+ * @param targetValue Valor que se desea encontrar.
  * @return int Indice del elemento encontrado o -1 si no existe.
  */
-int interpolation_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId);
+int interpolation_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetValue)
 
 #endif

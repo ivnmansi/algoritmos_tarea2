@@ -122,4 +122,8 @@ void quick_sort_last(Deportista *deportistas, int low, int high, SortCriteria cr
 void quick_sort_first(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
 void quick_sort_random(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
 void quick_sort_median(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
+
+void merge_sort_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order);
+
+void merge_sort_optimized_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order);
 #endif
