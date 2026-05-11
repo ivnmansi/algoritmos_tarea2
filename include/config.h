@@ -27,6 +27,7 @@
 #define CSV_ROUTE "./db/deportistas.csv"            /**< CSV principal de deportistas. */
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"  /**< Salida de benchmark de busqueda. */
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"      /**< Salida de benchmark de ordenamiento. */
+#define SELECTION_BENCHMARK_ROUTE "./db/selection_benchmark.csv" /**< Salida de benchmark de seleccion. */
 /** @} */
 
 /**

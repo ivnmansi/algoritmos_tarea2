@@ -163,8 +163,9 @@ void print_sort_result_header(const char *algorithmName, const char *fieldName, 
     printf(BOLD "Criterio:  " RESET "%s\n", safeField);
     printf(BOLD "Orden:     " RESET "%s\n", safeOrder);
     if(shown > DEPORTISTAS_PAGE_SIZE && DEPORTISTAS_PAGE_SIZE > 0) {
-        printf(BOLD "Mostrando: " RESET "%d/%d "RESET "\n", DEPORTISTAS_PAGE_SIZE, total, DEPORTISTAS_PAGE_SIZE);
-    } else {
+        printf(BOLD "Mostrando: " RESET "%d/%d\n", DEPORTISTAS_PAGE_SIZE, total);
+    }
+    else{
         printf(BOLD "Mostrando: " RESET "%d/%d\n", shown, total);
     }
     if(sortSeconds >= 0) {

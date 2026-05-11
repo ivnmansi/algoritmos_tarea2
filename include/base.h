@@ -15,16 +15,6 @@
 void run_experiment(void);
 
 /**
- * @brief Ejecuta el benchmark de algoritmos de busqueda.
- */
-void run_search_benchmark(void);
-
-/**
- * @brief Ejecuta el benchmark de algoritmos de ordenamiento.
- */
-void run_sort_benchmark(void);
-
-/**
  * @brief Busca un deportista por su ID.
  *
  * @param targetId ID a buscar.

@@ -33,29 +33,9 @@ typedef struct {
     const char *stage;  /**< Nombre de la etapa para mostrar en progreso. */
 } SortBenchAlgoDef;
 
-/* Definiciones de los algoritmos disponibles para benchmarks */
-const SearchBenchAlgoDef SEARCH_BENCH_ALGOS[SEARCH_BENCH_ALGO_COUNT] = {
-    {"Secuencial (ID)", "secuencial_s", "secuencial"},
-    {"Binaria (ID)", "binaria_s", "binaria"},
-    {"Binaria recursiva (ID)", "binaria_rec_s", "binaria recursiva"},
-    {"Exponencial (ID)", "exponencial_s", "exponencial"},
-    {"Interpolacion (ID)", "interpolacion_s", "interpolacion"},
-    {"Binaria por rango (PUNTAJE)", "rango_puntaje_s", "rango puntaje"}
-};
-
-/* Definiciones de los algoritmos disponibles para benchmarks */
-const SortBenchAlgoDef SORT_BENCH_ALGOS[SORT_BENCH_ALGO_COUNT] = {
-    {"Insertion", "insertion", "insertion"},
-    {"Bubble (opt)", "bubble", "bubble_opt"},
-    {"Selection (opt)", "selection", "selection_opt"},
-    {"Cocktail shaker", "cocktail", "cocktail"},
-    {"Merge", "merge", "merge"},
-    {"Merge optimizado", "merge_opt", "merge_opt"},
-    {"Quick (pivote primero)", "quick_first", "quick_first"},
-    {"Quick (pivote ultimo)", "quick_last", "quick_last"},
-    {"Quick (pivote aleatorio)", "quick_random", "quick_random"},
-    {"Quick (pivote mediana)", "quick_median", "quick_median"}
-};
+/* Declaraciones de los algoritmos disponibles para benchmarks */
+extern const SearchBenchAlgoDef SEARCH_BENCH_ALGOS[SEARCH_BENCH_ALGO_COUNT];
+extern const SortBenchAlgoDef SORT_BENCH_ALGOS[SORT_BENCH_ALGO_COUNT];
 
 /**
  * @brief Convierte una mascara de bits en una lista de indices seleccionados.
@@ -251,7 +231,10 @@ void run_search_benchmark();
  */
 void run_sort_benchmark();
 
-
+/**
+ * @brief Ejecuta el benchmark de seleccion y guarda sus resultados en CSV.
+ */
+void run_selection_benchmark();
 
 
 #endif

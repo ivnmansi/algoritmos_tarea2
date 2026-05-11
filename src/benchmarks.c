@@ -13,7 +13,32 @@
 #include "errors.h"
 #include "print_format.h"
 #include "searching.h"
+#include "selection.h"
 #include "sorting.h"
+
+/* Definiciones de los algoritmos disponibles para benchmarks */
+const SearchBenchAlgoDef SEARCH_BENCH_ALGOS[SEARCH_BENCH_ALGO_COUNT] = {
+    {"Secuencial (ID)", "secuencial_s", "secuencial"},
+    {"Binaria (ID)", "binaria_s", "binaria"},
+    {"Binaria recursiva (ID)", "binaria_rec_s", "binaria recursiva"},
+    {"Exponencial (ID)", "exponencial_s", "exponencial"},
+    {"Interpolacion (ID)", "interpolacion_s", "interpolacion"},
+    {"Binaria por rango (PUNTAJE)", "rango_puntaje_s", "rango puntaje"}
+};
+
+/* Definiciones de los algoritmos disponibles para benchmarks */
+const SortBenchAlgoDef SORT_BENCH_ALGOS[SORT_BENCH_ALGO_COUNT] = {
+    {"Insertion", "insertion", "insertion"},
+    {"Bubble (opt)", "bubble", "bubble_opt"},
+    {"Selection (opt)", "selection", "selection_opt"},
+    {"Cocktail shaker", "cocktail", "cocktail"},
+    {"Merge", "merge", "merge"},
+    {"Merge optimizado", "merge_opt", "merge_opt"},
+    {"Quick (pivote primero)", "quick_first", "quick_first"},
+    {"Quick (pivote ultimo)", "quick_last", "quick_last"},
+    {"Quick (pivote aleatorio)", "quick_random", "quick_random"},
+    {"Quick (pivote mediana)", "quick_median", "quick_median"}
+};
 
 /**
  * @brief Convierte una mascara de bits en una lista de indices seleccionados.
@@ -761,7 +786,7 @@ void run_sort_benchmark(){
     int selectedSortIdx[SORT_BENCH_ALGO_COUNT];
     int selectedSortCount = build_selected_indices(selectedSort, SORT_BENCH_ALGO_COUNT, selectedSortIdx, SORT_BENCH_ALGO_COUNT);
 
-    // Escribir encabezado CSV (solo lo seleccionado)
+    // Escribir encabezado CSV
     fprintf(out, "n");
     for(int k = 0; k < selectedSortCount; k++) {
         int idx = selectedSortIdx[k];
@@ -875,4 +900,101 @@ void run_sort_benchmark(){
     fclose(out);
     free_deportistas_array(baseArray, count);
     printf(BG_GREEN "\nBenchmark de ordenamiento guardado con exito en %s\n" RESET, SORT_BENCHMARK_ROUTE);
+}
+
+void run_selection_benchmark(){
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
+        }
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
+        return;
+    }
+
+    int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
+    int stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
+    }
+
+    FILE *out = fopen(SELECTION_BENCHMARK_ROUTE, "w");
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, SELECTION_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    printf(BOLD_BLUE "\n=== Selection benchmark (quickselect) ===\n" RESET);
+    printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET, SELECTION_BENCHMARK_ROUTE, intervals, EXPERIMENT_REPEATS);
+
+    // Escribir encabezado CSV (mejor y peor caso para quickselect)
+    fprintf(out, "n,mejor_quickselect_s,peor_quickselect_s\n");
+
+    printf("n \t | caso \t | quickselect(s)\n");
+    printf(ASCII_HR_WIDE "\n");
+    printf(HIDE_CURSOR);
+
+    // Inicio del benchmark
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double caseTotals[2] = {0.0};
+        int caseIndices[2] = {BENCHMARK_CASE_BEST, BENCHMARK_CASE_WORST};
+
+        // Iterar sobre los 2 casos: mejor y peor
+        for(int caseIdx = 0; caseIdx < 2; caseIdx++) {
+            int caseIndex = caseIndices[caseIdx];
+            BenchmarkCase benchmarkCase = (BenchmarkCase)caseIndex;
+
+            for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+                Deportista *work;
+                int k;
+                clock_t start;
+                clock_t end;
+                const char *caseName = get_case_name(benchmarkCase);
+
+                progress_update_line("selection", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, caseName);
+
+                work = clone_deportistas_array(baseArray, n);
+                if(work == NULL) {
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                // Determinar k según el caso
+                if(benchmarkCase == BENCHMARK_CASE_BEST) {
+                    k = n / 2;  // Elemento del medio (mejor caso)
+                } else {
+                    k = 0;  // Elemento mínimo (peor caso)
+                }
+
+                start = clock();
+                (void)get_kth_element(work, n, k, SORT_BY_PUNTAJE, ASCENDING);
+                end = clock();
+
+                caseTotals[caseIdx] += clock_to_seconds(start, end);
+                free_deportistas_array(work, n);
+            }
+
+            caseTotals[caseIdx] /= EXPERIMENT_REPEATS;
+        }
+
+        // Escribir en CSV
+        fprintf(out, "%d,%.10f,%.10f\n", n, caseTotals[0], caseTotals[1]);
+
+        progress_clear_line();
+
+        printf("%d \t | %s \t | %.10f\n", n, get_case_name(BENCHMARK_CASE_BEST), caseTotals[0]);
+        printf("%d \t | %s \t | %.10f\n", n, get_case_name(BENCHMARK_CASE_WORST), caseTotals[1]);
+    }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+
+    fclose(out);
+    free_deportistas_array(baseArray, count);
+    printf(BG_GREEN "\nBenchmark de selection guardado con exito en %s\n" RESET, SELECTION_BENCHMARK_ROUTE);
 }

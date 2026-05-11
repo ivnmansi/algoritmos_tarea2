@@ -14,6 +14,7 @@
 #include "errors.h"
 #include "print_format.h"
 #include "kth_athlete.h"
+#include "benchmarks.h"
 
 /**
  * @brief Ejecuta el programa a partir de los argumentos entregados.
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    while((opt = getopt(argc, argv, "hg:tr:bsi:k:")) != -1) {
+    while((opt = getopt(argc, argv, "hg:tr:bsi:k:n")) != -1) {
         switch(opt) {
             /* ------------ ayuda -----------------*/
             case 'h':
@@ -83,6 +84,11 @@ int main(int argc, char **argv)
             /** ----------- benchmark de ordenamiento --------------------- */
             case 's':  
                 run_sort_benchmark();
+                break;
+
+            /** ----------- benchmark de selección ----------------------- */
+            case 'n':
+                run_selection_benchmark();
                 break;
             
             /** ---------- k-ésimo deportista --------------------- */

@@ -15,6 +15,7 @@
  * @return int Indice del elemento encontrado o -1 si no existe.
  */
 int exponencial_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId){
+    (void)criteria;  // Parámetro no utilizado
 
     if(deportistas == NULL || length < 1) {
         return -1;
