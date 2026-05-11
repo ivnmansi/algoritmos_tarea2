@@ -13,6 +13,7 @@
 #include "csv.h"
 #include "errors.h"
 #include "print_format.h"
+#include "kth_athlete.h"
 
 /**
  * @brief Ejecuta el programa a partir de los argumentos entregados.
@@ -32,7 +33,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    while((opt = getopt(argc, argv, "hg:tr:bsi:")) != -1) {
+    while((opt = getopt(argc, argv, "hg:tr:bsi:k:")) != -1) {
         switch(opt) {
             /* ------------ ayuda -----------------*/
             case 'h':
@@ -82,6 +83,11 @@ int main(int argc, char **argv)
             /** ----------- benchmark de ordenamiento --------------------- */
             case 's':  
                 run_sort_benchmark();
+                break;
+            
+            /** ---------- k-ésimo deportista --------------------- */
+            case 'k':
+                show_kth_athlete(atoi(optarg));
                 break;
             
             /** ----------- opción desconocida --------------------- */

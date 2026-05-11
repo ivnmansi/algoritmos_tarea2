@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "deportista.h"
 #include "config.h"
@@ -158,5 +159,7 @@ void progress_clear_line(void);
 void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage);
 
 const char *get_case_name(BenchmarkCase benchmarkCase);
+
+void print_time(time_t start, time_t end);
 
 #endif

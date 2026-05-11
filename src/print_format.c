@@ -177,3 +177,9 @@ void print_sort_result_footer(void)
 {
     print_result_footer_base();
 }
+
+void print_time(time_t start, time_t end)
+{
+    double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    printf(BOLD "Tiempo de ejecucion: " RESET "%.6f segundos\n", seconds);
+}
