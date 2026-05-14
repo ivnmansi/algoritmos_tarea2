@@ -19,13 +19,11 @@ El programa implementa una interfaz de línea de comandos, que ofrece las siguie
     \item \textbf{Benchmarks:} En el programa se incluyen 4 benchmarks de experimentación, los cuales miden el tiempo de ejecución de los algoritmos de ordenamiento, búsqueda y selección sobre conjuntos de datos de diferentes tamaños y características, guardando los resultados en archivos CSV para su posterior análisis.
 \end{itemize}
 
-
-
 \section{Algoritmos de Ordenamiento}
 
 \subsection{Merge Sort}
 
-La implementación de Merge Sort se realizó mediante una estrategia recursiva de tipo \textit{divide and conquer}. El algoritmo divide sucesivamente el arreglo de deportistas en dos mitades hasta alcanzar el caso base, correspondiente a subarreglos de un único elemento, los cuales ya se consideran ordenados.
+La implementación de Merge Sort se realizó mediante una estrategia recursiva. El algoritmo divide sucesivamente el arreglo de deportistas en dos mitades hasta alcanzar el caso base, correspondiente a subarreglos de un único elemento, los cuales ya se consideran ordenados.
 
 La función recursiva calcula el punto medio utilizando la expresión:
 
@@ -94,7 +92,7 @@ La partición es la operación central del algoritmo. Recibe el subarreglo delim
 Todas las variantes comparten exactamente el mismo código de partición y recursión. La única diferencia entre ellas es qué hacen antes de partir, y todas terminan dejando el pivote elegido en la última posición para que Lomuto pueda operar siempre de la misma manera.
 
 \subsubsection{Variante de último elemento}
-La variante de último elemento no realiza ninguna acción previa, ya que el pivote ya está donde Lomuto lo espera. Es la más simple pero la más vulnerable: en arreglos ya ordenados el pivote siempre cae en un extremo, lo que degenera el rendimiento a \[O(n^2)\].
+La variante de último elemento no realiza ninguna acción previa, ya que el pivote ya está donde Lomuto lo espera. Es la más simple pero la más vulnerable: en arreglos ya ordenados el pivote siempre cae en un extremo, lo que degenera el rendimiento a $O(n^2)$.
 
 \subsubsection{Variante de primer elemento}
 La variante de primer elemento simplemente intercambia el primer elemento con el último antes de partir. Resuelve el caso del arreglo invertido pero sigue siendo vulnerable al arreglo ya ordenado, que es el peor caso contrario.
@@ -122,58 +120,84 @@ O(n^2)
 
 y ocurre cuando el pivote siempre queda en un extremo, situación que las variantes de pivote aleatorio y mediana de tres mitigan considerablemente.
 
+
 \section{Algoritmos de Búsqueda y Selección}
 
 \subsection{Búsqueda Binaria Recursiva}
-La función recibe cinco parámetros: el arreglo de deportistas, los índices \texttt{left} y \texttt{right} que delimitan el rango actual de búsqueda, el criterio de búsqueda \texttt{criteria} y el ID objetivo. El parámetro \texttt{criteria} está presente únicamente por consistencia con el resto de los algoritmos de búsqueda del proyecto, pero no se utiliza internamente ya que esta función siempre busca por ID.
 
-La estructura del algoritmo sigue un esquema \texttt{if/else} anidado. El primer \texttt{if} evalúa el caso base: si \texttt{left} es mayor que \texttt{right}, el rango se agotó sin encontrar el elemento y se retorna \texttt{-1}. De lo contrario, se calcula el índice del elemento del medio usando la expresión:
+La búsqueda binaria recursiva se implementa mediante la función \texttt{recursive\_binary\_search}. La función recibe cinco parámetros:
+
+\begin{itemize}
+    \item \textbf{deportistas:} Puntero al arreglo de estructuras deportista, que debe estar ordenado por ID\@.
+    \item \textbf{left:} Índice del límite izquierdo del rango actual de búsqueda\@.
+    \item \textbf{right:} Índice del límite derecho del rango actual de búsqueda\@.
+    \item \textbf{targetId:} El ID del deportista que se desea encontrar\@.
+\end{itemize}
+
+La implementación se divide en tres partes principales, siguiendo la estrategia de divide y vencerás:
+
+\subsubsection{Caso base}
+El primer condicional evalúa si \texttt{left > right}. Esta condición indica que el rango de búsqueda se ha agotado sin encontrar el elemento, por lo que la función retorna \texttt{-1} para señalar que el ID no existe en el arreglo.
+
+\subsubsection{División}
+Si el rango aún contiene elementos (\texttt{left} $\leq$ \texttt{right}), el algoritmo calcula el punto medio del rango actual:
 
 \[
 \texttt{mid = left + (right - left) / 2}
 \]
 
-Esta expresión es equivalente a:
+Esta expresión evita desbordamientos que podrían ocurrir con la forma clásica \texttt{(left + right) / 2} en arreglos muy grandes. El índice \texttt{mid} divide el problema en dos subproblemas de aproximadamente igual tamaño.
+
+\subsubsection{Conquista}
+Una vez dividido el problema, se compara el elemento en la posición \texttt{mid} con el \texttt{targetId}:
+
+\begin{itemize}
+    \item \textbf{Elemento encontrado:} Si \texttt{deportistas[mid]->id == targetId}, se retorna el índice \texttt{mid} inmediatamente.
+    
+    \item \textbf{Buscar en la mitad izquierda:} Si \texttt{deportistas[mid]->id > targetId}, el elemento buscado debe estar en la mitad izquierda, ya que el arreglo está ordenado. Se realiza una llamada recursiva:
+    \[
+    \texttt{recursive\_binary\_search(deportistas, left, mid - 1, criteria, targetId)}
+    \]
+    
+    \item \textbf{Buscar en la mitad derecha:} Si \texttt{deportistas[mid]->id < targetId}, el elemento está en la mitad derecha. Se realiza la llamada recursiva:
+    \[
+    \texttt{recursive\_binary\_search(deportistas, mid + 1, right, criteria, targetId)}
+    \]
+\end{itemize}
+
+\subsection{Búsqueda exponencial}
+
+La búsqueda exponencial implementa la estrategia divide y vencerás combinando dos fases: expansión exponencial para localizar un rango de búsqueda y luego búsqueda binaria recursiva dentro de ese rango.
+
+\subsubsection{Fase de expansión exponencial}
+
+El algoritmo comienza verificando si el elemento objetivo se encuentra en la primera posición. Si es así, retorna el índice 0 inmediatamente, logrando el mejor caso \(O(1)\).
+
+En caso contrario, inicia la fase de expansión con un límite \texttt{bound} establecido en 1. En cada iteración, duplica el valor del límite:
 
 \[
-\texttt{(left + right) / 2}
+\texttt{bound = bound * 2}
 \]
 
-pero evita un potencial desbordamiento aritmético en arreglos muy grandes.
+Durante cada iteración, verifica si el elemento en la posición \texttt{bound} es mayor u igual al objetivo. Si lo es, ha encontrado un rango que contiene potencialmente al elemento buscado. El rango identificado se extiende desde \(\texttt{bound/2}\) hasta \texttt{bound} (o hasta \texttt{length - 1} si \texttt{bound} excede la longitud del arreglo).
 
-Con el índice del medio calculado, se compara su ID con el objetivo. Si son iguales, se retorna el índice directamente. Si el ID del medio es mayor que el buscado, el elemento solo puede estar en la mitad izquierda, por lo que se llama recursivamente con:
+La cantidad de iteraciones en esta fase es proporcional a \(\log i\), donde \(i\) es la posición del elemento buscado, ya que cada duplicación del límite acota exponencialmente el espacio de búsqueda.
 
-\[
-\texttt{right = mid - 1}
-\]
+\subsubsection{Fase de búsqueda binaria recursiva}
 
-En caso contrario, el elemento está en la mitad derecha y se llama con:
-
-\[
-\texttt{left = mid + 1}
-\]
-
-Cada llamada recursiva reduce el rango a la mitad, lo que produce una complejidad temporal de:
-
-\[
-O(\log n)
-\]
-        
-A diferencia de la versión iterativa, esta versión consume espacio adicional en el stack proporcional a:
-
-\[
-O(\log n)
-\]
-
-debido a las llamadas apiladas, aunque en este trabajo de laboratorio no representa un problema.
+Una vez identificado el rango, el algoritmo aplica búsqueda binaria de forma \textbf{completamente recursiva} sobre el intervalo \([\texttt{bound/2}, \texttt{bound}]\). La implementación utiliza una función auxiliar \texttt{exponencial\_binary\_search\_recursive} que implementa divide y vencerás como se describió anteriormente.
 
 \subsection{Búsqueda por Interpolación}
 
-La búsqueda por interpolación se implementó como una alternativa optimizada a la búsqueda binaria para arreglos numéricos ordenados y distribuidos de manera relativamente uniforme.
+La búsqueda por interpolación se implementó como una alternativa optimizada a la búsqueda binaria para arreglos numéricos ordenados, utilizando una estrategia de divide y vencerás mediante \textbf{división inteligente}.
 
-A diferencia de la búsqueda binaria, que siempre inspecciona el elemento central del rango actual, este algoritmo estima una posición probable del elemento objetivo utilizando interpolación lineal. La posición se calcula mediante la expresión:
+A diferencia de la búsqueda binaria, que siempre divide el rango por la mitad, este algoritmo estima una posición probable del elemento objetivo basándose en los valores reales en los extremos del rango, permitiendo una división más cercana al objetivo.
 
-La posición estimada $pos$ se calcula mediante la fórmula de interpolación lineal, la cual mapea el valor buscado dentro del rango de valores conocidos del arreglo:
+\subsubsection{Caso base}
+Si \texttt{low > high}, el rango se ha agotado sin encontrar el elemento, por lo que retorna \texttt{-1}.
+
+\subsubsection{División}
+En lugar de calcular \texttt{mid = (left + right) / 2} como en búsqueda binaria, la interpolación estima la posición usando la fórmula:
 
 \begin{equation}
     pos = low + \left[ \frac{high - low}{highValue - lowValue} \cdot (targetValue - lowValue) \right]
@@ -181,84 +205,167 @@ La posición estimada $pos$ se calcula mediante la fórmula de interpolación li
 
 Donde:
 \begin{itemize}
-    \item \textbf{low / high:} Son los índices de los límites actuales del subarreglo.
-    \item \textbf{lowValue / highValue:} Son los valores almacenados en dichos índices.
-    \item \textbf{targetValue:} Es el valor numérico que se desea encontrar.
+    \item \textbf{low / high:} Son los índices de los límites del rango actual.
+    \item \textbf{lowValue / highValue:} Son los valores en dichos índices según el criterio de búsqueda.
+    \item \textbf{targetValue:} Es el valor que se busca.
 \end{itemize}
 
-La implementación soporta múltiples criterios de búsqueda (\texttt{ID}, \texttt{puntaje} y \texttt{competencias}) mediante condicionales que extraen dinámicamente el valor numérico correspondiente desde cada deportista.
+Esta fórmula mapea linealmente el valor buscado dentro del rango conocido de valores, produciendo una estimación más cercana al objetivo en datos con distribución uniforme. Esta es la división del problema: en lugar de un corte aritmético fijo, es un corte proporcional al valor.
 
-Una vez estimada la posición, el algoritmo compara el valor encontrado con el objetivo:
+\subsubsection{Conquista}
+Una vez estimada la posición, se compara el valor encontrado con el objetivo:
+
 \begin{itemize}
-    \item Si ambos coinciden, se retorna el índice encontrado.
-    \item Si el valor es menor que el objetivo, la búsqueda continúa en la mitad derecha.
-    \item En caso contrario, continúa en la mitad izquierda.
+    \item \textbf{Elemento encontrado:} Si los valores coinciden, retorna el índice.
+    
+    \item \textbf{Buscar en la mitad derecha:} Si el valor en \texttt{pos} es menor que el objetivo, se recursiona:
+    \[
+    \texttt{interpolation\_search\_recursive(deportistas, pos + 1, high, criteria, targetValue)}
+    \]
+    
+    \item \textbf{Buscar en la mitad izquierda:} Si el valor en \texttt{pos} es mayor que el objetivo, se recursiona:
+    \[
+    \texttt{interpolation\_search\_recursive(deportistas, low, pos - 1, criteria, targetValue)}
+    \]
 \end{itemize}
 
-La implementación incluye varias validaciones para garantizar robustez:
+\subsection{Búsqueda por Rango}
+
+La búsqueda por rango implementa divide y vencerás para encontrar \textbf{todos} los elementos que coinciden con un valor específico, retornando los índices del primer y último elemento que poseen ese valor. Esto es especialmente útil cuando múltiples deportistas comparten el mismo puntaje o criterio de búsqueda.
+
+\subsubsection{Estructura recursiva}
+
+El algoritmo utiliza tres funciones recursivas auxiliares que implementan divide y vencerás en cada fase:
+
+\textbf{1. Fase de localización inicial (find\_any\_recursive):}
+
+Realiza una búsqueda binaria recursiva estándar para encontrar \textbf{cualquier} elemento que coincida con el valor objetivo. Una vez que encuentra un elemento coincidente, retorna su índice:
+
 \begin{itemize}
-    \item Verificación de punteros nulos y arreglos vacíos.
-    \item Control de división por cero cuando los valores extremos son iguales.
-    \item Comprobación de que el valor objetivo se encuentre dentro del rango actual.
-    \item Validación de que la posición interpolada permanezca dentro de los límites válidos del arreglo.
+    \item \textbf{Caso base:} Si \texttt{low > high}, no se encontró nada, retorna $-1$.
+    \item \textbf{División:} Calcula \(\texttt{mid = low + (high - low) / 2}\).
+    \item \textbf{Conquista:} 
+    \begin{itemize}
+        \item Si \texttt{deportistas[mid]} coincide con el objetivo, retorna \texttt{mid}.
+        \item Si el valor en \texttt{mid} es menor, recursa en la mitad derecha.
+        \item Si es mayor, recursa en la mitad izquierda.
+    \end{itemize}
 \end{itemize}
 
-Cuando los datos poseen una distribución uniforme, la complejidad promedio puede aproximarse a:
+\textbf{2. Fase de expansión izquierda (find\_leftmost\_recursive):}
 
-\[
-O(\log \log n)
-\]
+Una vez localizado cualquier elemento coincidente, esta función busca recursivamente el \textbf{primer} elemento con ese valor expandiendo hacia la izquierda:
 
-superando a la búsqueda binaria tradicional. Sin embargo, en distribuciones desbalanceadas o no uniformes, el rendimiento puede degradarse hasta:
+\begin{itemize}
+    \item \textbf{Caso base:} Si \texttt{low > high}, retorna $-1$.
+    \item \textbf{División:} Calcula \(\texttt{mid = low + (high - low) / 2}\).
+    \item \textbf{Conquista:} 
+    \begin{itemize}
+        \item Si \texttt{deportistas[mid]} coincide, continúa buscando en la mitad izquierda pero \textbf{recuerda este índice} como el candidato más a la izquierda.
+        \item Si encuentra un elemento más a la izquierda, lo retorna; de lo contrario, retorna el índice actual.
+        \item Si el valor es menor, busca a la derecha.
+        \item Si es mayor, busca a la izquierda.
+    \end{itemize}
+\end{itemize}
 
-\[
-O(n)
-\]
+\textbf{3. Fase de expansión derecha (find\_rightmost\_recursive):}
+
+Busca recursivamente el \textbf{último} elemento con el valor objetivo expandiendo hacia la derecha:
+
+\begin{itemize}
+    \item \textbf{Caso base:} Si \texttt{low > high}, retorna $-1$.
+    \item \textbf{División:} Calcula \(\texttt{mid = low + (high - low) / 2}\).
+    \item \textbf{Conquista:} 
+    \begin{itemize}
+        \item Si \texttt{deportistas[mid]} coincide, continúa buscando en la mitad derecha pero \textbf{recuerda este índice} como el candidato más a la derecha.
+        \item Si encuentra un elemento más a la derecha, lo retorna; de lo contrario, retorna el índice actual.
+        \item Si el valor es menor, busca a la derecha.
+        \item Si es mayor, busca a la izquierda.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tipo de dato retornado}
+
+La función retorna una estructura \texttt{Range} que contiene dos campos:
+
+\begin{itemize}
+    \item \texttt{start:} Índice del primer elemento que coincide con el valor objetivo.
+    \item \texttt{end:} Índice del último elemento que coincide con el valor objetivo.
+\end{itemize}
+
+Si no se encuentra ningún elemento, ambos campos se establecen en $-1$.
 
 \subsection{Quick Select}
 
-Para obtener el elemento ubicado en una posición específica sin ordenar completamente el arreglo, se implementó el algoritmo \textit{Quick Select}. Este algoritmo reutiliza la lógica de partición de Quick Sort, pero únicamente continúa la búsqueda sobre la partición que contiene el elemento deseado.
+Para obtener el elemento ubicado en una posición específica sin ordenar completamente el arreglo, se implementó el algoritmo \textit{Quick Select} como una versión recursiva de divide y vencerás. Este algoritmo reutiliza la lógica de partición de Quick Sort, pero únicamente continúa la búsqueda sobre la partición que contiene el elemento deseado, reduciendo significativamente el trabajo realizado.
 
-La operación principal del algoritmo es la función \texttt{partition}, basada en el esquema de Lomuto. En esta implementación, el pivote corresponde al último elemento del subarreglo. Durante el recorrido, todos los elementos que deben preceder al pivote según el criterio y orden seleccionados son intercambiados hacia la izquierda mediante la función \texttt{swap\_deportistas}.
+\subsubsection{Selección de pivote con mediana de tres}
 
-La comparación se realiza utilizando:
+Antes de particionar, el algoritmo utiliza la estrategia de \textbf{mediana de tres} para elegir el pivote:
 
-\[
-\texttt{compare\_by\_criteria}
-\]
-
-lo que permite seleccionar elementos según distintos atributos del deportista, mientras que el parámetro \texttt{order} permite trabajar tanto en orden ascendente como descendente.
-
-Una vez finalizada la partición, el pivote queda ubicado en su posición definitiva dentro del arreglo. A partir de esto, el algoritmo evalúa tres casos:
 \begin{itemize}
-    \item Si el índice del pivote coincide con \(k\), el elemento buscado fue encontrado.
-    \item Si \(k\) es menor que el índice del pivote, la búsqueda continúa únicamente en la partición izquierda.
-    \item Si \(k\) es mayor, la búsqueda continúa únicamente en la partición derecha.
+    \item Se examinan tres elementos: el primero (\texttt{left}), el del medio, y el último (\texttt{right}).
+    \item Se ordenan estos tres elementos entre sí mediante comparaciones directas.
+    \item La mediana de estos tres se coloca en la última posición (\texttt{right}), donde la partición la espera.
 \end{itemize}
 
-A diferencia de Quick Sort, Quick Select nunca procesa ambas particiones simultáneamente, lo que reduce considerablemente el trabajo realizado.
+Esta estrategia evita los peores casos de pivotes fijos (primer o último elemento) y produce particiones más balanceadas que un pivote aleatorio en la mayoría de los casos prácticos.
 
-El caso base ocurre cuando el subarreglo contiene un único elemento:
+\subsubsection{Partición de Lomuto}
 
-\[
-\texttt{left == right}
-\]
+La operación principal es la función \texttt{partition}, basada en el esquema de Lomuto. Durante el recorrido del subarreglo:
 
-momento en el que dicho elemento es retornado directamente.
+\begin{itemize}
+    \item Se mantiene un índice \(i\) que marca el límite entre elementos que deben ir a la izquierda del pivote y los que no.
+    \item Se comparan todos los elementos (excepto el pivote) con el pivote, decidiendo si preceden o no según el criterio y orden seleccionados.
+    \item Los elementos que deben estar a la izquierda se intercambian hacia esa posición.
+    \item Al final, el pivote se coloca en su posición definitiva.
+\end{itemize}
 
-La complejidad temporal promedio del algoritmo es:
+La comparación se realiza mediante \texttt{compare\_by\_criteria}, permitiendo trabajar con múltiples criterios (ID, puntaje, competencias), y el orden (ascendente o descendente) se controla mediante el parámetro \texttt{order}.
+
+\subsubsection{Estructura recursiva de divide y vencerás}
+
+La función \texttt{quick\_select\_recursive} implementa el ciclo de divide y vencerás:
+
+\begin{itemize}
+    \item \textbf{Caso base:} Si el subarreglo contiene un único elemento (\texttt{left == right}), se retorna directamente sin más procesamiento.
+    
+    \item \textbf{División:} Se aplica mediana de tres y se particiona el subarreglo, obteniendo el índice del pivote (\texttt{pivotIndex}).
+    
+    \item \textbf{Conquista:} Se evalúan tres casos:
+    \begin{itemize}
+        \item Si \(k =\) \texttt{pivotIndex}, el elemento buscado fue encontrado en su posición correcta.
+        \item Si \(k <\) \texttt{pivotIndex}, el elemento está en la mitad izquierda, se recursa:
+        \[
+        	texttt{quick\_select\_recursive(arr, left, pivotIndex - 1, k, \ldots)}
+        \]
+        \item Si \(k >\) \texttt{pivotIndex}, el elemento está en la mitad derecha, se recursa:
+        \[
+        	texttt{quick\_select\_recursive(arr, pivotIndex + 1, right, k, \ldots)}
+        \]
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Complejidad}
+
+La complejidad temporal promedio es:
 
 \[
 O(n)
 \]
 
-ya que en cada iteración solo se continúa explorando una partición del arreglo. Sin embargo, al igual que Quick Sort, el peor caso ocurre cuando las particiones quedan extremadamente desbalanceadas, alcanzando una complejidad de:
+ya que en cada iteración solo se continúa explorando una partición del arreglo, y el tamaño del subarreglo se reduce aproximadamente por un factor constante en promedio.
+
+Sin embargo, el peor caso ocurre cuando el pivote siempre queda en un extremo, resultando en:
 
 \[
 O(n^2)
 \]
 
-aunque este comportamiento es poco frecuente en datos aleatorios.
+aunque este comportamiento es poco frecuente en datos aleatorios y mitiga considerablemente el uso de mediana de tres.
+
+La complejidad espacial es $O(\log n)$ por las llamadas recursivas apiladas en el stack.
 
 \section{Aplicación práctica}
 

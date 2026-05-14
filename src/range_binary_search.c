@@ -6,7 +6,101 @@
 #include "searching.h"
 
 /**
- * @brief Busqueda binaria que devuelve el rango de índices donde se encuentra el puntaje buscado.
+ * Función auxiliar recursiva que busca el primer elemento que coincide con el valor objetivo
+ * (expansión izquierda de forma recursiva).
+ */
+static int find_leftmost_recursive(Deportista *deportistas, int low, int high, SearchCriteria criteria, int targetValue)
+{
+    if (low > high) {
+        return -1;
+    }
+
+    int mid = low + (high - low) / 2;
+    int midValue;
+
+    if (criteria == SEARCH_BY_ID) {
+        midValue = deportistas[mid]->id;
+    } else if (criteria == SEARCH_BY_PUNTAJE) {
+        midValue = (int)deportistas[mid]->puntaje;
+    } else {
+        midValue = deportistas[mid]->competencias;
+    }
+
+    if (midValue == targetValue) {
+        // Encontramos un elemento coincidente, pero necesitamos buscar más a la izquierda
+        int leftResult = find_leftmost_recursive(deportistas, low, mid - 1, criteria, targetValue);
+        return leftResult == -1 ? mid : leftResult;
+    } else if (midValue < targetValue) {
+        return find_leftmost_recursive(deportistas, mid + 1, high, criteria, targetValue);
+    } else {
+        return find_leftmost_recursive(deportistas, low, mid - 1, criteria, targetValue);
+    }
+}
+
+/**
+ * Función auxiliar recursiva que busca el último elemento que coincide con el valor objetivo
+ * (expansión derecha de forma recursiva).
+ */
+static int find_rightmost_recursive(Deportista *deportistas, int low, int high, SearchCriteria criteria, int targetValue)
+{
+    if (low > high) {
+        return -1;
+    }
+
+    int mid = low + (high - low) / 2;
+    int midValue;
+
+    if (criteria == SEARCH_BY_ID) {
+        midValue = deportistas[mid]->id;
+    } else if (criteria == SEARCH_BY_PUNTAJE) {
+        midValue = (int)deportistas[mid]->puntaje;
+    } else {
+        midValue = deportistas[mid]->competencias;
+    }
+
+    if (midValue == targetValue) {
+        // Encontramos un elemento coincidente, pero necesitamos buscar más a la derecha
+        int rightResult = find_rightmost_recursive(deportistas, mid + 1, high, criteria, targetValue);
+        return rightResult == -1 ? mid : rightResult;
+    } else if (midValue < targetValue) {
+        return find_rightmost_recursive(deportistas, mid + 1, high, criteria, targetValue);
+    } else {
+        return find_rightmost_recursive(deportistas, low, mid - 1, criteria, targetValue);
+    }
+}
+
+/**
+ * Función auxiliar recursiva que localiza cualquier elemento con el valor objetivo
+ * (fase inicial de divide y vencerás).
+ */
+static int find_any_recursive(Deportista *deportistas, int low, int high, SearchCriteria criteria, int targetValue)
+{
+    if (low > high) {
+        return -1;
+    }
+
+    int mid = low + (high - low) / 2;
+    int midValue;
+
+    if (criteria == SEARCH_BY_ID) {
+        midValue = deportistas[mid]->id;
+    } else if (criteria == SEARCH_BY_PUNTAJE) {
+        midValue = (int)deportistas[mid]->puntaje;
+    } else {
+        midValue = deportistas[mid]->competencias;
+    }
+
+    if (midValue == targetValue) {
+        return mid;
+    } else if (midValue < targetValue) {
+        return find_any_recursive(deportistas, mid + 1, high, criteria, targetValue);
+    } else {
+        return find_any_recursive(deportistas, low, mid - 1, criteria, targetValue);
+    }
+}
+
+/**
+ * @brief Búsqueda binaria que devuelve el rango de índices donde se encuentra el puntaje buscado.
  * 
  * @param deportistas 
  * @param length 
@@ -14,86 +108,30 @@
  * @param targetId 
  * @return Range 
  */
-Range range_binary_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId){
-
+Range range_binary_search(Deportista *deportistas, int length, SearchCriteria criteria, int targetId)
+{
     Range result = {-1, -1};
 
-    if(deportistas == NULL || length <= 0) {
+    if (deportistas == NULL || length <= 0) {
         return result;
     }
 
-    if(criteria != SEARCH_BY_ID && criteria != SEARCH_BY_PUNTAJE && criteria != SEARCH_BY_COMPETENCIAS) {
+    if (criteria != SEARCH_BY_ID && criteria != SEARCH_BY_PUNTAJE && criteria != SEARCH_BY_COMPETENCIAS) {
         return result;
     }
 
-    int left = 0;
-    int right = length - 1;
+    // Fase 1: Encontrar cualquier elemento con el valor objetivo (divide y vencerás)
+    int anyIndex = find_any_recursive(deportistas, 0, length - 1, criteria, targetId);
 
-    while(left <= right) {
-        int mid = left + (right - left) / 2;
-
-        if(deportistas[mid] == NULL) {
-            return result;
-        }
-
-        int midValue;
-        if(criteria == SEARCH_BY_ID) {
-            midValue = deportistas[mid]->id;
-        } else if(criteria == SEARCH_BY_PUNTAJE) {
-            midValue = (int)deportistas[mid]->puntaje;
-        } else {
-            midValue = deportistas[mid]->competencias;
-        }
-
-        if(midValue == targetId) {
-            result.start = mid;
-            result.end = mid;
-
-            while(result.start > left) {
-                int prevValue;
-                if(deportistas[result.start - 1] == NULL) {
-                    break;
-                }
-                if(criteria == SEARCH_BY_ID) {
-                    prevValue = deportistas[result.start - 1]->id;
-                } else if(criteria == SEARCH_BY_PUNTAJE) {
-                    prevValue = (int)deportistas[result.start - 1]->puntaje;
-                } else {
-                    prevValue = deportistas[result.start - 1]->competencias;
-                }
-                if(prevValue != targetId) {
-                    break;
-                }
-                result.start--;
-            }
-
-            while(result.end < right) {
-                int nextValue;
-                if(deportistas[result.end + 1] == NULL) {
-                    break;
-                }
-                if(criteria == SEARCH_BY_ID) {
-                    nextValue = deportistas[result.end + 1]->id;
-                } else if(criteria == SEARCH_BY_PUNTAJE) {
-                    nextValue = (int)deportistas[result.end + 1]->puntaje;
-                } else {
-                    nextValue = deportistas[result.end + 1]->competencias;
-                }
-                if(nextValue != targetId) {
-                    break;
-                }
-                result.end++;
-            }
-
-            return result;
-        }
-
-        if(midValue < targetId) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+    if (anyIndex == -1) {
+        return result; // No encontrado
     }
+
+    // Fase 2: Encontrar el límite izquierdo (primer elemento con ese valor)
+    result.start = find_leftmost_recursive(deportistas, 0, length - 1, criteria, targetId);
+
+    // Fase 3: Encontrar el límite derecho (último elemento con ese valor)
+    result.end = find_rightmost_recursive(deportistas, 0, length - 1, criteria, targetId);
 
     return result;
 }
