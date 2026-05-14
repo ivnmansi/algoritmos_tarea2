@@ -204,7 +204,7 @@ static double run_sort_operation(SortCriteria criteria, int rankingAmount, SortO
             hasElapsed = 1;
             break;
         case OPTIMIZED_MERGE_SORT:
-            merge_sort_optimized_deportistas(deportistas, count, criteria, order);
+            merge_sort_optimized_deportistas(deportistas, count, criteria, order, MERGE_SORT_THRESHOLD);
             hasElapsed = 1;
             break;   
         default:

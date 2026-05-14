@@ -134,6 +134,7 @@ void print_help(const char *programName)
     printf("  %-14s %s\n", "-p <min> <max>", "Muestra deportistas con puntaje en ese rango");
     printf("  %-14s %s\n", "-b", "Ejecuta benchmark de busqueda");
     printf("  %-14s %s\n", "-s", "Ejecuta benchmark de ordenamiento");
+    printf("  %-14s %s\n", "-m", "Ejecuta benchmark del umbral de Merge Sort");
     printf("\n");
 }
 

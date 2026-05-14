@@ -123,12 +123,67 @@ void optimized_bubble_sort(Deportista *deportistas, int length, SortCriteria cri
  */
 void optimized_selection_sort(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
 
+/**
+ * @brief 
+ * 
+ * @param deportistas 
+ * @param low 
+ * @param high 
+ * @param criteria 
+ * @param order 
+ */
 void quick_sort_last(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
+
+/**
+ * @brief 
+ * 
+ * @param deportistas 
+ * @param low 
+ * @param high 
+ * @param criteria 
+ * @param order 
+ */
 void quick_sort_first(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
+
+/**
+ * @brief 
+ * 
+ * @param deportistas 
+ * @param low 
+ * @param high 
+ * @param criteria 
+ * @param order 
+ */
 void quick_sort_random(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
+/**
+ * @brief 
+ * 
+ * @param deportistas 
+ * @param low 
+ * @param high 
+ * @param criteria 
+ * @param order 
+ */
 void quick_sort_median(Deportista *deportistas, int low, int high, SortCriteria criteria, SortOrder order);
 
+/**
+ * @brief 
+ * 
+ * @param arr 
+ * @param count 
+ * @param criteria 
+ * @param order 
+ */
 void merge_sort_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order);
 
-void merge_sort_optimized_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order);
+/**
+ * @brief 
+ * 
+ * @param arr 
+ * @param count 
+ * @param criteria 
+ * @param order 
+ * @param threshold 
+ */
+void merge_sort_optimized_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order, int threshold);
 #endif

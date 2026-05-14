@@ -34,7 +34,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    while((opt = getopt(argc, argv, "hg:tr:bsi:k:np:")) != -1) {
+    while((opt = getopt(argc, argv, "hg:tr:bsi:k:np:m")) != -1) {
         switch(opt) {
             /* ------------ ayuda -----------------*/
             case 'h':
@@ -90,7 +90,10 @@ int main(int argc, char **argv)
             case 'n':
                 run_selection_benchmark();
                 break;
-            
+            /** ----------- benchmark threshold -------------------------*/
+            case 'm':
+                run_threshold_benchmark();
+                break;
             /** ---------- k-ésimo deportista --------------------- */
             case 'k':
                 show_kth_athlete(atoi(optarg));

@@ -7,12 +7,25 @@ En este capítulo se describen los conceptos y algoritmos utilizados en el proye
 \subsection{Merge Sort}
 Es un algoritmo basado en la técnica de dividir el problema en subproblemas más pequeños. El proceso consiste en dividir el arreglo original en dos mitades, ordenarlas por separado de manera recursiva y finalmente combinarlas mediante una operación de mezcla (merge) que asegura el orden de los elementos.
 
+Este algoritmo tiene una complejidad temporal de \(O(n \log n)\) en todos los casos (mejor, promedio y peor), lo que lo hace eficiente y predecible para grandes conjuntos de datos. Esto se debe a su estructura regular de división recursiva, que no depende del estado inicial de los datos. Además, es un algoritmo estable, aunque su implementación estándar utiliza espacio adicional para la mezcla.
+
 \subsection{Merge Sort Optimizado}
 El rendimiento del Merge Sort estándar puede mejorar mediante ajustes prácticos. Una optimización común consiste en establecer un umbral; cuando el tamaño del arreglo es pequeño, el algoritmo cambia a \textit{Insertion Sort} para reducir la carga de la recursividad. También es posible verificar si las dos mitades ya están ordenadas antes de intentar mezclarlas, evitando operaciones innecesarias.
+
+La complejidad asintótica sigue siendo \(O(n \log n)\) en todos los casos. Sin embargo, las optimizaciones prácticas (como verificar si las mitades ya están ordenadas) reducen las constantes multiplicativas y mejoran el rendimiento en la práctica, aunque no cambian la complejidad asintótica del algoritmo.
 
 \subsection{Quick sort}
 Al igual que el Merge Sort, el Quick Sort es un algoritmo de ordenamiento basado en la técnica de divide y vencerás.
 Este algoritmo funciona seleccionando un pivote y realizando una partición del arreglo en dos subarreglos: uno con los elementos menores que el pivote y otro con los elementos mayores. Posteriormente, el mismo procedimiento se aplica de forma recursiva a cada subarreglo hasta que todos los elementos quedan ordenados.
+
+\subsubsection{Pivote último elemento}
+En esta variante, el pivote se selecciona como el último elemento del arreglo. Aunque es fácil de implementar, esta estrategia puede llevar a un rendimiento deficiente (complejidad \(O(n^2)\)) en casos donde los datos ya están ordenados o casi ordenados, ya que el pivote no divide el arreglo de manera equilibrada.
+
+\subsubsection{Pivote primer elemento}
+En esta variante, el pivote se selecciona como el primer elemento del arreglo. Similar a la selección del último elemento, esta estrategia también puede resultar en un rendimiento deficiente (complejidad \(O(n^2)\)) para datos ordenados o casi ordenados, debido a la falta de equilibrio en la partición.
+
+\subsubsection{Pivote elemento aleatorio}
+En esta variante, el pivote se selecciona de manera aleatoria dentro del arreglo. Esta estrategia mejora significativamente el rendimiento promedio del Quick Sort, ya que reduce la probabilidad de seleccionar pivotes que conduzcan a particiones desequilibradas. La complejidad promedio y mejor caso sigue siendo \(O(n \log n)\), mientras que el peor caso se reduce a \(O(n \log n)\) con alta probabilidad, lo que hace que esta variante sea más robusta frente a diferentes tipos de datos.
 
 \section{Algoritmos de Búsqueda y Selección}
 

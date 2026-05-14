@@ -236,5 +236,9 @@ void run_sort_benchmark();
  */
 void run_selection_benchmark();
 
+/**
+ * @brief Ejecuta el benchmark del umbral de Merge Sort y guarda sus resultados en CSV.
+ */
+void run_threshold_benchmark();
 
 #endif

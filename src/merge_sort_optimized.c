@@ -70,30 +70,30 @@ static void insertion_sort_range(Deportista *arr, int left, int right, SortCrite
 }
 
 //recursion interna de la versión optimizada
-static void merge_sort_optimized_recursive(Deportista *arr, int left, int right, SortCriteria criteria, SortOrder order)
+static void merge_sort_optimized_recursive(Deportista *arr, int left, int right, SortCriteria criteria, SortOrder order, int threshold)
 {
     if(left >= right) {
         return;
     }
 
     //sub arreglo insertion Sort
-    if(right - left + 1 <= MERGE_SORT_THRESHOLD) {
+    if(right - left + 1 <= threshold) {
         insertion_sort_range(arr, left, right, criteria, order);
         return;
     }
 
     int mid = left + (right - left) / 2;
 
-    merge_sort_optimized_recursive(arr, left, mid, criteria, order);
-    merge_sort_optimized_recursive(arr, mid + 1, right, criteria, order);
+    merge_sort_optimized_recursive(arr, left, mid, criteria, order, threshold);
+    merge_sort_optimized_recursive(arr, mid + 1, right, criteria, order, threshold);
     merge(arr, left, mid, right, criteria, order);
 }
 
-void merge_sort_optimized_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order)
+void merge_sort_optimized_deportistas(Deportista *arr, int count, SortCriteria criteria, SortOrder order, int threshold)
 {
     if(arr == NULL || count < 2) {
         return;
     }
 
-    merge_sort_optimized_recursive(arr, 0, count - 1, criteria, order);
+    merge_sort_optimized_recursive(arr, 0, count - 1, criteria, order, threshold);
 }

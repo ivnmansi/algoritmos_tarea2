@@ -333,7 +333,7 @@ void run_sort_algorithm_once(int algoIndex, Deportista *work, int n){
             merge_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
             break;
         case 5:
-            merge_sort_optimized_deportistas(work, n, SORT_BY_ID, ASCENDING);
+            merge_sort_optimized_deportistas(work, n, SORT_BY_ID, ASCENDING, MERGE_SORT_THRESHOLD);
             break;
         case 6:
             quick_sort_first(work, 0, n - 1, SORT_BY_ID, ASCENDING);
@@ -902,6 +902,10 @@ void run_sort_benchmark(){
     printf(BG_GREEN "\nBenchmark de ordenamiento guardado con exito en %s\n" RESET, SORT_BENCHMARK_ROUTE);
 }
 
+/**
+ * @brief 
+ * 
+ */
 void run_selection_benchmark(){
     int count = 0;
     Deportista *baseArray = load_deportistas_array(&count);
@@ -997,4 +1001,75 @@ void run_selection_benchmark(){
     fclose(out);
     free_deportistas_array(baseArray, count);
     printf(BG_GREEN "\nBenchmark de selection guardado con exito en %s\n" RESET, SELECTION_BENCHMARK_ROUTE);
+}
+
+/**
+ * @brief 
+ * 
+ */
+void run_threshold_benchmark(){
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
+        }
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
+        return;
+    }
+
+    FILE *out = fopen(THRESHOLD_BENCHMARK_ROUTE, "w");
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, THRESHOLD_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
+        return;
+    }
+
+    printf(BOLD_BLUE "\n=== Merge Sort Threshold benchmark ===\n" RESET);
+    printf(DIM "Archivo: %s | repeticiones: %d\n\n" RESET, THRESHOLD_BENCHMARK_ROUTE, EXPERIMENT_REPEATS);
+
+    // Escribir encabezado CSV
+    fprintf(out, "threshold,tiempo_s\n");
+
+    printf("threshold \t | tiempo(s)\n");
+    printf(ASCII_HR_WIDE "\n");
+    printf(HIDE_CURSOR);
+
+    for(int threshold = 2; threshold <= 128; threshold *= 2) {
+        double totalTime = 0.0;
+
+        for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+            Deportista *work;
+            clock_t start;
+            clock_t end;
+
+            char stage[64];
+            snprintf(stage, sizeof(stage), "threshold=%d", threshold);
+            progress_update_line("threshold", 1, 1, count, r + 1, EXPERIMENT_REPEATS, stage);
+
+            work = clone_deportistas_array(baseArray, count);
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            start = clock();
+            merge_sort_optimized_deportistas(work, count, SORT_BY_ID, ASCENDING, threshold);
+            end = clock();
+            totalTime += clock_to_seconds(start, end);
+            free_deportistas_array(work, count);
+        }
+
+        totalTime /= EXPERIMENT_REPEATS;
+        fprintf(out, "%d,%.10f\n", threshold, totalTime);
+        progress_clear_line();
+        printf("%d \t\t | %.10f\n", threshold, totalTime);
+    }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+    fclose(out);
+    free_deportistas_array(baseArray, count);
+    printf(BG_GREEN "\nBenchmark de threshold guardado con exito en %s\n" RESET, THRESHOLD_BENCHMARK_ROUTE);
 }
