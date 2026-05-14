@@ -1,5 +1,31 @@
 #include "selection.h"
 
+static int should_precede(Deportista left, Deportista right, SortCriteria criteria, SortOrder order)
+{
+    int cmp = compare_by_criteria(left, right, criteria);
+    if(order == ASCENDING) {
+        return cmp < 0;
+    }
+    return cmp > 0;
+}
+
+static void pivot_median(Deportista *arr, int left, int right, SortCriteria criteria, SortOrder order)
+{
+    int mid = left + (right - left) / 2;
+
+    if(should_precede(arr[mid], arr[left], criteria, order)) {
+        swap_deportistas(&arr[mid], &arr[left]);
+    }
+    if(should_precede(arr[right], arr[left], criteria, order)) {
+        swap_deportistas(&arr[right], &arr[left]);
+    }
+    if(should_precede(arr[right], arr[mid], criteria, order)) {
+        swap_deportistas(&arr[right], &arr[mid]);
+    }
+
+    swap_deportistas(&arr[mid], &arr[right]);
+}
+
 /**
  * @brief Particiona el arreglo de deportistas según un criterio y orden dados.
  * 
@@ -44,6 +70,7 @@ Deportista quick_select_recursive(Deportista *arr, int left, int right, int k, S
         return arr[left];
     }
 
+    pivot_median(arr, left, right, criteria, order);
     int pivotIndex = partition(arr, left, right, criteria, order);
 
     if (k == pivotIndex) {

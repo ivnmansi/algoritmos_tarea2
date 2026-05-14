@@ -25,15 +25,34 @@ En esta variante, el pivote se selecciona como el último elemento del arreglo. 
 En esta variante, el pivote se selecciona como el primer elemento del arreglo. Similar a la selección del último elemento, esta estrategia también puede resultar en un rendimiento deficiente (complejidad \(O(n^2)\)) para datos ordenados o casi ordenados, debido a la falta de equilibrio en la partición.
 
 \subsubsection{Pivote elemento aleatorio}
-En esta variante, el pivote se selecciona de manera aleatoria dentro del arreglo. Esta estrategia mejora significativamente el rendimiento promedio del Quick Sort, ya que reduce la probabilidad de seleccionar pivotes que conduzcan a particiones desequilibradas. La complejidad promedio y mejor caso sigue siendo \(O(n \log n)\), mientras que el peor caso se reduce a \(O(n \log n)\) con alta probabilidad, lo que hace que esta variante sea más robusta frente a diferentes tipos de datos.
+En esta variante, el pivote se selecciona de manera aleatoria dentro del arreglo. Esta estrategia mejora el rendimiento esperado del Quick Sort, ya que reduce la probabilidad de seleccionar pivotes que conduzcan a particiones desequilibradas. La complejidad promedio esperada es \(O(n \log n)\), el mejor caso también es \(O(n \log n)\) y el peor caso sigue siendo \(O(n^2)\), aunque ocurre con baja probabilidad.
+
+\subsubsection{Pivote mediana de tres}
+En esta variante, el pivote se selecciona como la mediana de tres elementos: el primer, el último y el elemento central del arreglo. Esta estrategia busca elegir un pivote más representativo para reducir la probabilidad de particiones desequilibradas, especialmente cuando los datos están ordenados o casi ordenados. La complejidad promedio esperada es \(O(n \log n)\), el mejor caso también es \(O(n \log n)\) y el peor caso sigue siendo \(O(n^2)\), aunque con menor probabilidad que en las variantes de pivote fijo.
 
 \section{Algoritmos de Búsqueda y Selección}
 
-\subsection{Búsqueda Binaria}
+\subsection{Búsqueda Binaria Recursiva}
 Es un algoritmo de búsqueda cuyo funcionamiento se basa en dividir repetidamente el arreglo en dos mitades, descartando en cada paso la mitad en la que el elemento buscado sea imposible de encontrar. Para funcionar necesita que los datos estén previamente ordenados.
+
+La complejidad temporal de la búsqueda binaria es \(O(\log n)\) en el mejor y promedio de los casos, y \(O(\log n)\) en el peor caso, debido a la naturaleza de la división del espacio de búsqueda. La búsqueda binaria es eficiente para grandes conjuntos de datos ordenados, pero no es adecuada para datos no ordenados.
 
 \subsection{Búsqueda por Interpolación}
 Es una mejora sobre la búsqueda binaria para casos donde los datos están distribuidos de manera uniforme. En lugar de buscar siempre en el centro, el algoritmo calcula una posición estimada basándose en el valor buscado y los valores en los extremos del arreglo.
 
+La complejidad temporal de la búsqueda por interpolación es \(O(1)\) en el mejor caso, \(O(\log \log n)\) en el caso promedio cuando los datos están distribuidos de manera uniforme, y \(O(n)\) en el peor caso, especialmente cuando los datos no están distribuidos uniformemente. Este algoritmo puede ser significativamente más rápido que la búsqueda binaria para conjuntos de datos grandes y uniformemente distribuidos, pero su rendimiento puede degradarse considerablemente para datos no uniformes.
+
+\subsection{Búsqueda exponencial}
+Es un algoritmo de búsqueda que combina la eficiencia de la búsqueda binaria con la capacidad de manejar arreglos de tamaño desconocido. Comienza buscando en posiciones exponenciales (1, 2, 4, 8, etc.) hasta encontrar un rango que contenga el elemento buscado. Luego, realiza una búsqueda binaria dentro de ese rango.
+
+Su complejidad temporal es \(O(1)\) en el mejor caso cuando el elemento buscado está en la primera posición, \(O(\log i)\) en función de la posición \(i\) del elemento buscado, y \(O(\log n)\) en el peor caso. La búsqueda exponencial es especialmente útil para arreglos de tamaño desconocido o muy grandes, donde la búsqueda binaria tradicional no sería aplicable.
+
+\subsection{Búsqueda binaria por rango}
+Es una variante de la búsqueda binaria que se utiliza para encontrar el rango de posiciones donde un valor específico aparece en un arreglo ordenado. En la implementación del proyecto, primero se localiza una coincidencia mediante búsqueda binaria y luego se expanden los límites hacia la izquierda y la derecha para abarcar todas las ocurrencias contiguas del mismo valor.
+
+La complejidad temporal es \(O(\log n + k)\), donde \(k\) es la cantidad de elementos que forman el rango encontrado. En el peor caso, cuando todas las posiciones coinciden con el valor buscado, la complejidad llega a \(O(n)\). Para el caso de intervalos de puntaje, la implementación usa dos búsquedas binarias independientes para hallar los límites inferior y superior, por lo que cada extremo cuesta \(O(\log n)\) y el total sigue siendo \(O(\log n)\).
+
 \subsection{Quick Select}
 Este algoritmo se utiliza para encontrar el k-ésimo elemento más pequeño en una lista desordenada. Utiliza una lógica similar a Quick Sort (selección de un pivote), pero a diferencia de este, solo continúa la búsqueda en la partición que contiene el índice deseado, lo que reduce significativamente el tiempo de ejecución.
+
+La complejidad temporal de Quick Select es \(O(n)\) en el mejor caso, \(O(n)\) en el caso promedio, y \(O(n^2)\) en el peor caso. En la implementación del proyecto se utiliza la mediana de tres como criterio para elegir el pivote, lo que ayuda a reducir la probabilidad de alcanzar el peor caso y mejora el comportamiento práctico del algoritmo. Este algoritmo es especialmente útil para grandes conjuntos de datos donde se necesita encontrar un elemento específico sin ordenar completamente la lista.

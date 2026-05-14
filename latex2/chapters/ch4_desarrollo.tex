@@ -1,6 +1,25 @@
 \chapter{Desarrollo}
 
-En esta sección se detalla la implementación de los algoritmos y las decisiones tomadas para mejorar su desempeño.
+\section{Diseño general del sistema}
+
+El desarrollo se realizó sobre una versión anterior ya funcional del proyecto. Este consiste en un sistema de gestión de deportistas, que permite cargar datos desde un archivo CSV, ordenarlos según distintos criterios y mostrar resultados específicos como el ranking de los mejores deportistas. Este se basó en la idea de evaluar el rendimiento de diferentes algoritmos de ordenamiento y búsqueda secuenciales, los cuales se mantuvieron en la versión actual.
+
+\subsection{Deportistas y generación de datos}
+Los deportistas se representan mediante una estructura que contiene: \textit{ID}, \textit{nombre}, \textit{puntaje} y \textit{competencias}. La generación de datos se realiza mediante la opción \textit{-g <numero>} del programa, que crea un archivo CSV con el número especificado de deportistas. Cada deportista tiene un ID único, un nombre generado aleatoriamente, y un puntaje y cantidad de competencias también aleatorios dentro de rangos predefinidos. Esto permite probar los algoritmos con conjuntos de datos de diferentes tamaños y características.
+
+\subsection{Funcionalidades}
+El programa implementa una interfaz de línea de comandos, que ofrece las siguientes funcionalidades principales:
+\begin{itemize}
+    \item \textbf{Generación de datos:} Permite crear archivos CSV con un número específico de deportistas aleatorios.
+    \item \textbf{Ordenamiento:} Dispone de un menú en el que el usuario puede ordenar los deportistas, seleccionando el algoritmo, el criterio de ordenamiento (ID, puntaje, competencias) y el orden (ascendente o descendente).
+    \item \textbf{Búsqueda:} Permite buscar deportistas por ID, seleccionando el algoritmo de búsqueda. Si se selecciona la búsqueda binaria por rango, sin embargo este buscará por puntaje, mostrando todos los deportistas que tengan el puntaje ingresado.
+    \item \textbf{Ranking:} Permite mostrar el ranking de los mejores \(N\) deportistas según puntaje, utilizando Quick Select para obtener los resultados de manera eficiente.
+    \item \textbf{Búsqueda de k-ésimo elemento:} Permite obtener el deportista ubicado en la posición \(k\) según un criterio específico, también utilizando Quick Select.
+    \item \textbf{Búsqueda por rango de puntajes:} Permite mostrar todos los deportistas cuyo puntaje se encuentre dentro de un intervalo definido por el usuario, utilizando búsqueda binaria por rango.
+    \item \textbf{Benchmarks:} En el programa se incluyen 4 benchmarks de experimentación, los cuales miden el tiempo de ejecución de los algoritmos de ordenamiento, búsqueda y selección sobre conjuntos de datos de diferentes tamaños y características, guardando los resultados en archivos CSV para su posterior análisis.
+\end{itemize}
+
+
 
 \section{Algoritmos de Ordenamiento}
 
