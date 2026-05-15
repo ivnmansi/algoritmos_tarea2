@@ -35,6 +35,7 @@ set pointsize 1.6
 searchFile     = "db/search_benchmark.csv"
 sortFile       = "db/sort_benchmark.csv"
 selectionFile  = "db/selection_benchmark.csv"
+thresholdFile  = "db/threshold_benchmark.csv"
 
 
 # SEARCH - PROMEDIO
@@ -143,5 +144,16 @@ set title "Benchmark Quickselect"
 plot \
 selectionFile using 1:2 title "Mejor caso", \
 selectionFile using 1:3 title "Peor caso"
+
+unset output
+
+
+# THRESHOLD
+
+set output "plots/threshold_benchmark.pdf"
+set title "Benchmark Threshold"
+
+plot \
+thresholdFile using 1:2 title "Tiempo"
 
 unset output
