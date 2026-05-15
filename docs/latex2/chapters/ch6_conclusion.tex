@@ -1,33 +1,24 @@
 \chapter{Conclusiones}
 
-El desarrollo e implementación de los algoritmos de \textit{Divide y Vencerás} permitió contrastar de forma empírica las complejidades teóricas con el comportamiento real del sistema sobre conjuntos de datos de distintos tamaños. Los resultados obtenidos en los benchmarks de ordenamiento, búsqueda, selección y umbral confirman las ventajas de esta estrategia frente a los enfoques iterativos, al mismo tiempo que evidencian cosas importantes dentro de los propios algoritmos de \textit{Divide y Vencerás}.
+La implementación de los algoritmos de \textit{Divide y Vencerás} permitió comparar su comportamiento real con la complejidad teórica. Los benchmarks muestran que esta estrategia es más eficiente que los enfoques iterativos, aunque su rendimiento también depende de decisiones como el pivote, el umbral y el tamaño de entrada.
 
-\section{Ordenamiento}
+En ordenamiento, \textit{Merge Sort} y \textit{Quick Sort} superaron con claridad a los algoritmos iterativos. \textit{Merge Sort} fue el más estable, y su versión optimizada mejoró ligeramente el rendimiento al usar \textit{Insertion Sort} en subarreglos pequeños.
+En \textit{Quick Sort}, la elección del pivote fue decisiva. Los pivotes fijo primero y último elemento degradaron el rendimiento en los peores casos, mientras que las variantes aleatoria y mediana de tres mantuvieron mejor estabilidad. La mediana de tres resultó la opción más robusta.
 
-Los resultados en el caso promedio y peor confirman que \textit{Merge Sort} y \textit{Quick Sort} mantienen tiempos de ejecución significativamente menores frente a los algoritmos iterativos \(O(n^2)\) del proyecto anterior. \textit{Merge Sort} se destaca como el más estable del grupo: tanto en su versión estándar como en la optimizada, sus tiempos son consistentes en todos los escenarios analizados. La versión optimizada, incorpora el uso de \textit{Insertion Sort} para subarreglos pequeños y entrega una mejora constante aunque ligera en todos los casos, sin alterar la complejidad asintótica.
+Las búsquedas binaria iterativa, binaria recursiva y exponencial mostraron tiempos muy bajos y funcionaron mejor que la búsqueda secuencial. Además, la versión recursiva de búsqueda binaria no mostró una penalización importante frente a la iterativa.
 
-\textit{Quick Sort}, por su parte, muestra una variabilidad crítica determinada por la estrategia de selección del pivote. Las variantes de pivote fijo primer y último elemento sufren una degradación hacia \(O(n^2)\) cuando los datos se encuentran ordenados o inversamente ordenados, lo cual se observó claramente en los benchmarks de mejor y peor caso. Las variantes de pivote aleatorio y mediana de tres corrigen esta inestabilidad y mantienen el comportamiento \(O(n \log n)\) incluso en los escenarios más desfavorables, siendo la mediana de tres la opción más robusta al no depender de un generador de números aleatorios.
+En selección, \textit{Quick Select} se comportó de forma cercana a lo esperado para un algoritmo lineal. Como en \textit{Quick Sort}, hubo diferencia entre mejor y peor caso, aunque la estrategia de mediana de tres ayuda a reducir esa variación.
 
-\section{Búsqueda y Selección}
+El benchmark de umbral mostró que existe un punto intermedio conveniente entre dividir demasiado y ordenar demasiado pronto con un algoritmo simple. El mejor resultado se obtuvo con un umbral de 32 elementos, por lo que ese valor quedó como una buena elección para esta implementación.
 
-Los algoritmos de búsqueda logarítmica validaron su eficiencia teórica de manera contundente. La búsqueda binaria iterativa, la recursiva y la exponencial mantuvieron tiempos extremadamente bajos en los benchmarks de caso promedio y peor, demostrando una superioridad clara frente a la búsqueda secuencial. Un resultado relevante es que no se observó una penalización significativa por el uso de recursión en la búsqueda binaria recursiva respecto a su versión iterativa, lo que indica que el \textit{overhead} de las llamadas recursivas es despreciable a esta escala.
-
-En cuanto a la selección, \textit{Quick Select} exhibió un crecimiento de tiempo tendiente a la linealidad, consistente con su complejidad promedio \(O(n)\). Al igual que \textit{Quick Sort}, presentó una brecha visible entre el mejor y el peor caso, brecha que la estrategia de mediana de tres contribuye a reducir al favorecer particiones más equilibradas y disminuir la probabilidad de alcanzar el escenario \(O(n^2)\).
-
-\section{Optimización mediante Umbral (\textit{Threshold})}
-
-El benchmark de umbral demostró que el rendimiento del \textit{Merge Sort} híbrido responde a un equilibrio entre dos fuerzas opuestas: umbrales pequeños generan un exceso de llamadas recursivas con su correspondiente sobrecarga de función, mientras que umbrales grandes trasladan demasiado trabajo al \textit{Insertion Sort}, cuya naturaleza \(O(n^2)\) penaliza el rendimiento en subarreglos de tamaño moderado. El mejor tiempo promedio se obtuvo con un umbral de 32 elementos (\(0.001826\,s\)), valor que minimiza el tiempo total al equilibrar la profundidad de la recursión con la eficiencia del algoritmo simple. Este resultado valida empíricamente el valor \texttt{MERGE\_SORT\_THRESHOLD = 32} definido en la implementación como la elección más adecuada para el rango de datos del sistema.
-
-\section{Reflexión final}
-
-En términos generales, los experimentos confirman que el paradigma de \textit{Divide y Vencerás} ofrece una mejora sustancial de rendimiento respecto a los algoritmos iterativos simples a medida que el volumen de datos crece. No obstante, los resultados también ponen de manifiesto que la complejidad asintótica por sí sola no determina el comportamiento práctico: decisiones de implementación como la elección del pivote, el umbral de cambio entre algoritmos y la distribución de los datos influyen de manera decisiva en el rendimiento real. Por ello, una implementación efectiva requiere tanto el dominio teórico de los algoritmos como una validación experimental cuidadosa sobre los datos del sistema concreto.
+En general, los resultados confirman que \textit{Divide y Vencerás} mejora el rendimiento frente a enfoques más simples. Sin embargo, el comportamiento real también depende de detalles de implementación y de cómo están distribuidos los datos, así que siempre conviene medir antes de fijar una solución definitiva.
 
 \chapter{Contribuciones}
 
 \begin{itemize}
-    \item Iván Mansilla
-    \item Diego Peralta
-    \item Catalina Viñas
+    \item Iván Mansilla: Integración general, búsqueda exponencial, búsqueda binaria por rango, benchmarking, informe.
+    \item Diego Peralta: QuickSort, búsqueda binaria recursiva, N mejores deportistas, informe.
+    \item Catalina Viñas: Merge Sort, búsqueda por interpolación, QuickSelect, gráficos.
 \end{itemize}
 
 
